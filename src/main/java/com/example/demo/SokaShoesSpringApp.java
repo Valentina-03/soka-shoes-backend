@@ -7,6 +7,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class SokaShoesSpringApp {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		ConfigurableApplicationContext run = SpringApplication.run(SokaShoesSpringApp.class, args);
 	}

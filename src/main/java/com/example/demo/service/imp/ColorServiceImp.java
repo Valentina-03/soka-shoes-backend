@@ -24,7 +24,9 @@ public class ColorServiceImp implements ColorService {
 
     @Override
     @Transactional(readOnly = true )
-    public Optional<Color> encontrar(String id) { return cDAO.findById(id);}
+    public Optional<Color> encontrar(String id) { 
+    	return cDAO.findById(id);
+    }
 
     @Override
     @Transactional(readOnly = true)

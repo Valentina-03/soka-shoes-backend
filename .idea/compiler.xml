@@ -11,6 +11,7 @@
         <module name="backend-nortexploradores" />
         <module name="demo" />
         <module name="backend-nortexploradores-frank" />
+        <module name="soka-shoes-backend" />
         <module name="nortexploradores-git" />
       </profile>
     </annotationProcessing>
@@ -22,6 +23,7 @@
       <module name="backend-sokashoes" options="-parameters" />
       <module name="demo" options="-parameters" />
       <module name="nortexploradores-git" options="-parameters" />
+      <module name="soka-shoes-backend" options="-parameters" />
     </option>
   </component>
 </project>

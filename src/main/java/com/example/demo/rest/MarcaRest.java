@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.example.demo.rest;
 
-import com.example.demo.model.*;
+import com.example.demo.model.Marca;
 import com.example.demo.service.MarcaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,41 +12,72 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- *
- * @author Santi & Dani
- */
-
 @RestController
-@RequestMapping("/marca")
+@RequestMapping("/api/marca")
 @CrossOrigin(origins = "*")
-public class MarcaRest {
-    
+public class MarcaRest 
+{    
     @Autowired
-    MarcaService mser;
-    
+    private MarcaService service;
+
     @GetMapping
-    public ResponseEntity<List<Marca>> getMarca() {
-        return ResponseEntity.ok(mser.listar());
+    public ResponseEntity<List<Marca>> get() {
+        return ResponseEntity.ok(service.listar());
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    {
+        Marca marca = service.encontrar(id).orElse(null);
+        if (marca == null)
+            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        
+        service.eliminar(id);        
+        return ResponseEntity.ok(marca);
+    }
+    
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> encontrar(@PathVariable Integer id)
+    {
+        Marca marca = service.encontrar(id).orElse(null);
+        if (marca == null)
+            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        
+        return ResponseEntity.ok(marca);
     }
 
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody @Valid Marca p, BindingResult br) {
-
-        if (br.hasErrors()) {
+    public ResponseEntity<?> guardar(@RequestBody @Valid Marca nuevo, BindingResult br) 
+    {
+        if (br.hasErrors())
             return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
-        mser.guardar(p);
-        return ResponseEntity.ok(p);
+        
+        service.guardar(nuevo);
+        return ResponseEntity.ok(nuevo);
     }
 
+    @PutMapping
+    public ResponseEntity<?> editar(@RequestBody @Valid Marca actual, BindingResult br)
+    {
+        if (br.hasErrors())
+            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        
+        Marca nuevo = service.encontrar(actual.getIdMarca()).orElse(null);
+        if(nuevo == null) return new ResponseEntity<>("Marca no existente", HttpStatus.NOT_FOUND);
+        
+        service.guardar(actual);
+
+        return ResponseEntity.ok(service.encontrar(actual.getIdMarca()));
+    }
+    
     @GetMapping(path = "/{id}/cantidad")
-    public ResponseEntity<?> cantidadMarca(@PathVariable int id) {
-        Marca marca = mser.encontrar(id).orElse(null);
-        if (marca == null) {
+    public ResponseEntity<?> getCantidad(@PathVariable Integer id) 
+    {
+        Marca marca = service.encontrar(id).orElse(null);
+        if (marca == null)
             return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        }
+
         return ResponseEntity.ok( marca.productoCollection().size());
     }
-
+    
 }
