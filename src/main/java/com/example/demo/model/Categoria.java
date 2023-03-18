@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +11,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -30,13 +28,13 @@ public class Categoria implements Serializable
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false) @Column(name = "id_categoria")
+    @Column(name = "id_categoria")
     private Integer idCategoria;
 
-    @Size(max = 25)@Column(name = "nombre")
+    @Column(name = "nombre")
     private String nombre;
     
-    @Size(max = 50) @Column(name = "descripcion")
+    @Column(name = "descripcion")
     private String descripcion;
     
     @OneToMany(mappedBy = "categoria")

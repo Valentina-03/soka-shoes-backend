@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,8 +12,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -47,9 +44,6 @@ public class Transaccionp implements Serializable
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
     @Column(name = "transaction_id")
     private String transactionId;
     
@@ -77,45 +71,36 @@ public class Transaccionp implements Serializable
     @Temporal(TemporalType.TIMESTAMP)
     private Date transactionDate;
     
-    @Size(max = 5)
     @Column(name = "tax")
     private String tax;
     
-    @Size(max = 50)
     @Column(name = "pse_bank")
     private String pseBank;
     
-    @Size(max = 5)
     @Column(name = "shipping_country")
     private String shippingCountry;
     
-    @Size(max = 150)
     @Column(name = "description")
     private String description;
     
-    @Size(max = 5)
     @Column(name = "currency")
     private String currency;
     
     @Column(name = "value")
     private Long value;
     
-    @Size(max = 5)
     @Column(name = "billing_country")
     private String billingCountry;
     
-    @Size(max = 50)
     @Column(name = "payment_method_name")
     private String paymentMethodName;
     
-    @Size(max = 25)
     @Column(name = "email_buyer")
     private String emailBuyer;
     
     @Column(name = "payment_method_id")
     private Short paymentMethodId;
     
-    @Size(max = 25)
     @Column(name = "response_message_pol")
     private String responseMessagePol;
     

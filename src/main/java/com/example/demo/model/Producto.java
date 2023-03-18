@@ -2,22 +2,24 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "producto")
@@ -25,8 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
     @NamedQuery(name = "Producto.findByIdProducto", query = "SELECT p FROM Producto p WHERE p.idProducto = :idProducto"),
-    @NamedQuery(name = "Producto.findByModelo", query = "SELECT p FROM Producto p WHERE p.modelo = :modelo"),
-    @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion"),
+    @NamedQuery(name = "Producto.findByNombre", query = "SELECT p FROM Producto p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "Producto.findByEstado", query = "SELECT p FROM Producto p WHERE p.estado = :estado"),
     @NamedQuery(name = "Producto.findByMarca", query = "SELECT p FROM Producto p WHERE p.marca = :marca")})
 
 public class Producto implements Serializable 
@@ -35,50 +37,48 @@ public class Producto implements Serializable
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false) @Column(name = "id_producto")
+    @Column(name = "id_producto")
     private Integer idProducto;
     
-    @Column(name = "precio")
-    private int precio;
+    @Column(name = "nombre")
+    private String nombre;
     
-    @Column(name = "cantidad")
-    private int cantidad;
-    
-    @Column(name = "url_img")
-    private String urlImg;
-    
-    @Size(max = 25) @Column(name = "modelo")
-    private String modelo;
-    
-    @Size(max = 50) @Column(name = "descripcion")
+    @Column(name = "descripcion")
     private String descripcion;
     
+    @Column(name = "precio")
+    private Double precio;
+    
     @Column(name = "estado")
-    private boolean estado;
+    private Boolean estado;
     
-    @OneToMany(mappedBy = "producto")
-    private Collection<DetalleCompra> detalleCompraCollection;
+    @Column(name = "cantidad")
+    private Integer cantidad;
     
-    @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
-    @ManyToOne
-    private Categoria categoria;
+    @Column(name ="created_at")
+    @Temporal(TemporalType.DATE)
+    private Date createdAt;
+    
+    @Column(name ="updated_at")
+    @Temporal(TemporalType.DATE)
+    private Date updatedAt;
     
     @JoinColumn(name = "marca", referencedColumnName = "id_marca")
     @ManyToOne
     private Marca marca;
     
-    @ManyToMany(mappedBy = "productoCollection")
-    private Collection<Color> colorCollection;
+    @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
+    @ManyToOne
+    private Categoria categoria;
     
-    @JoinTable(name = "producto_talla", joinColumns = {
-        @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_talla", referencedColumnName = "id_talla")})
-    @ManyToMany
-    private Collection<Talla> tallaCollection;
+    @OneToMany(mappedBy = "producto", orphanRemoval = true)
+    @JsonIgnore
+    private Collection<DetalleProducto> detalleProductoCollection;
     
-    @OneToMany(mappedBy = "producto")
-    private Collection<Carrito> carritoCollection;
-
+    /*@OneToMany(mappedBy = "producto")
+    @JsonIgnore
+    private Collection<Carrito> carritoCollection;*/
+    
     
     public Producto() {}
 
@@ -98,42 +98,18 @@ public class Producto implements Serializable
         return idProducto;
     }
 
-    public String getUrlImg() {
-        return urlImg;
-    }
-
-    public void setUrlImg(String urlImg) {
-        this.urlImg = urlImg;
-    }
-
-    public int getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
     public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
-
-    public Collection<Color> colorCollection() {
-        return colorCollection;
-    }
-
-    public void setColorCollection(Collection<Color> colorCollection) {
-        this.colorCollection = colorCollection;
-    }
-
-    public Collection<Talla> tallaCollection() {
-        return tallaCollection;
-    }
-
-    public void setTallaCollection(Collection<Talla> tallaCollection) {
-        this.tallaCollection = tallaCollection;
-    }
-
+    
     public Categoria getCategoria() {
         return categoria;
     }
@@ -141,14 +117,22 @@ public class Producto implements Serializable
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
-
-    public Collection<DetalleCompra> detalleCompraCollection() {
-        return detalleCompraCollection;
+    
+    public Collection<DetalleProducto> getDetalleProductoCollection() {
+        return detalleProductoCollection;
     }
 
-    public void setDetalleCompraCollection(Collection<DetalleCompra> detalleCompraCollection) {
-        this.detalleCompraCollection = detalleCompraCollection;
+    public void setDetalleProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
+        this.detalleProductoCollection = detalleProductoCollection;
     }
+
+    /*public Collection<Carrito> getCarritoCollection() {
+        return carritoCollection;
+    }
+
+    public void setCarritoCollection(Collection<Carrito> carritoCollection) {
+        this.carritoCollection = carritoCollection;
+    }*/
 
     public int getCantidad() {
         return cantidad;
@@ -166,14 +150,6 @@ public class Producto implements Serializable
         this.marca = marca;
     }
 
-    public Collection<Carrito> carritoCollection() {
-        return carritoCollection;
-    }
-
-    public void setCarritoCollection(Collection<Carrito> carritoCollection) {
-        this.carritoCollection = carritoCollection;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -183,10 +159,9 @@ public class Producto implements Serializable
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Producto)) {
+        if (!(object instanceof Producto))
             return false;
-        }
+        
         Producto other = (Producto) object;
         if ((this.idProducto == null && other.idProducto != null) || (this.idProducto != null && !this.idProducto.equals(other.idProducto))) {
             return false;
@@ -199,14 +174,6 @@ public class Producto implements Serializable
         return "com.example.demo.model.Producto[ idProducto=" + idProducto + " ]";
     }
 
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -214,5 +181,45 @@ public class Producto implements Serializable
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Boolean getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Boolean estado) {
+		this.estado = estado;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public void setPrecio(Double precio) {
+		this.precio = precio;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
 
 }

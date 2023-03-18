@@ -1,9 +1,12 @@
 package com.example.demo.model;
 
 import com.example.demo.security.model.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,7 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -21,37 +25,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Compra.findAll", query = "SELECT c FROM Compra c"),
-    @NamedQuery(name = "Compra.findByIdCompra", query = "SELECT c FROM Compra c WHERE c.idCompra = :idCompra"),
-    @NamedQuery(name = "Compra.findByTotalCompra", query = "SELECT c FROM Compra c WHERE c.totalCompra = :totalCompra")})
-
+    @NamedQuery(name = "Compra.findByIdCompra", query = "SELECT c FROM Compra c WHERE c.idCompra = :idCompra")})
 public class Compra implements Serializable 
 {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "id_compra")
     private Long idCompra;
-    
-    @Column(name = "total_compra")
-    private Integer totalCompra;
     
     @Column(name = "estado")
     private String estado;
     
-    @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
-    @ManyToOne
-    private Usuario usuario;
+    @Column(name = "total_compra")
+    private Double totalCompra;
     
-    @OneToMany(mappedBy = "referenceSale")
-    private Collection<Transaccionp> transaccionpCollection;
+    @Column(name = "fecha")
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
     
     @OneToMany(mappedBy = "compra")
     private Collection<DetalleCompra> detalleCompraCollection;
-
-    public Compra() {
-    }
+    
+    @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
+    @ManyToOne
+    @JsonIgnore
+    private Usuario usuario;
+    
+    @OneToMany(mappedBy = "referenceSale")
+    @JsonIgnore
+    private Collection<Transaccionp> transaccionpCollection;
+    
+    
+    public Compra() {}
 
     public Compra(Long idCompra) {
         this.idCompra = idCompra;
@@ -65,7 +71,7 @@ public class Compra implements Serializable
         this.idCompra = idCompra;
     }
 
-    public Integer getTotalCompra() {
+    public Double getTotalCompra() {
         return totalCompra;
     }
 
@@ -77,8 +83,16 @@ public class Compra implements Serializable
         this.estado = estado;
     }
 
-    public void setTotalCompra(Integer totalCompra) {
+    public void setTotalCompra(Double totalCompra) {
         this.totalCompra = totalCompra;
+    }
+    
+    public Date getFecha() {
+        return this.fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public Usuario getUsuario() {
@@ -89,7 +103,7 @@ public class Compra implements Serializable
         this.usuario = usuario;
     }
 
-    public Collection<Transaccionp> transaccionpCollection() {
+    public Collection<Transaccionp> getTransaccionpCollection() {
         return transaccionpCollection;
     }
 
@@ -97,13 +111,14 @@ public class Compra implements Serializable
         this.transaccionpCollection = transaccionpCollection;
     }
 
-    public Collection<DetalleCompra> detalleCompraCollection() {
+    public Collection<DetalleCompra> getDetalleCompraCollection() {
         return detalleCompraCollection;
     }
 
     public void setDetalleCompraCollection(Collection<DetalleCompra> detalleCompraCollection) {
         this.detalleCompraCollection = detalleCompraCollection;
     }
+    
 
     @Override
     public int hashCode() {
@@ -114,7 +129,6 @@ public class Compra implements Serializable
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Compra)) {
             return false;
         }

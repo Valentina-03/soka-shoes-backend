@@ -2,19 +2,16 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "color")
@@ -29,20 +26,15 @@ public class Color implements Serializable
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Basic(optional = false)
-    @NotNull @Size(min = 1, max = 50)
     @Column(name = "id_color")
     private String idColor;
     
-    @Size(max = 25) @Column(name = "nombre")
+    @Column(name = "nombre")
     private String nombre;
     
-    @JoinTable(name = "producto_color", joinColumns = {
-        @JoinColumn(name = "id_color", referencedColumnName = "id_color")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")})
-    @ManyToMany
-    private Collection<Producto> productoCollection;
-
+    @OneToMany(mappedBy = "color", orphanRemoval = true)
+    @JsonIgnore
+    private Collection<DetalleProducto> detalleProductoCollection;
     
     public Color() {}
 
@@ -67,12 +59,12 @@ public class Color implements Serializable
         this.nombre = nombre;
     }
 
-    public Collection<Producto> productoCollection() {
-        return productoCollection;
+    public Collection<DetalleProducto> getDetalleProductoCollection() {
+        return detalleProductoCollection;
     }
 
-    public void setProductoCollection(Collection<Producto> productoCollection) {
-        this.productoCollection = productoCollection;
+    public void setDetalleProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
+        this.detalleProductoCollection = detalleProductoCollection;
     }
     
 

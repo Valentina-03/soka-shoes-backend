@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +13,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -31,11 +29,11 @@ public class Marca implements Serializable
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false) @Column(name = "id_marca")
+    @Column(name = "id_marca")
     private Integer idMarca;
     
-    @Basic(optional = false) @Column(name = "nombre")
-    @NotNull @Size(min = 1, max = 25)    
+    @Column(name = "nombre")
+    @NotNull
     private String nombre;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "marca")
@@ -51,8 +49,7 @@ public class Marca implements Serializable
     public Marca(Integer idMarca, String nombre) {
         this.idMarca = idMarca;
         this.nombre = nombre;
-    }
-    
+    }    
 
     public Integer getIdMarca() {
         return idMarca;

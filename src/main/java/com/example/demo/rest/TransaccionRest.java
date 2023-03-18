@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/pagos", method = RequestMethod.POST,
+@RequestMapping(value = "/api/pagos", method = RequestMethod.POST,
         consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
         produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class TransaccionRest 
@@ -47,8 +47,8 @@ public class TransaccionRest
         Transaccionp pay = service.getDatos(body);        
         Compra compra = compra_service.encontrar(Long.parseLong(body.get("reference_sale"))).get();
         
-        if (pay.getResponseMessagePol().equals("APPROVED") && pay.getValue() == (long) compra.getTotalCompra()) {
-            if (pay.getValue() == (long) compra.getTotalCompra()) {
+        if (pay.getResponseMessagePol().equals("APPROVED") && pay.getValue() == (double) compra.getTotalCompra()) {
+            if (pay.getValue() == (double) compra.getTotalCompra()) {
                 pay.setReferenceSale(compra);
                 compra.setEstado("APROBADA");
                 compra_service.guardar(compra);

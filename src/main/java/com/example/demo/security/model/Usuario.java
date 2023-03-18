@@ -2,6 +2,8 @@ package com.example.demo.security.model;
 
 import com.example.demo.model.Carrito;
 import com.example.demo.model.Compra;
+import com.example.demo.model.Direccion;
+
 import java.util.Collection;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,47 +11,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario 
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_Usuario;
+    @Column(name = "id_usuario")
+    private int idUsuario;
     
-    @NotNull
-    @Column(unique = true)
+    @Column(name = "username")
     private String username;
     
-    @NotNull
+    @Column(name = "email")
     private String email;
     
-    @NotNull
+    @Column(name = "password")
     private String password;
     
-    @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_id"))
-    private Set<Rol> roles = new HashSet<>();
+    @OneToMany(mappedBy = "usuario")
+    private Collection<Direccion> direccionCollection;
     
     @OneToMany(mappedBy = "usuario")
     private Collection<Compra> compraCollection;
     
     @OneToMany(mappedBy = "usuario")
     private Collection<Carrito> carritoCollection;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
+    private Set<Rol> roles = new HashSet<>();
 
-    public Usuario() {
-    }
+    public Usuario() {}
 
     public Usuario(int id_Usuario, String nombreUsuario, @NotNull String email, @NotNull String password) {
-
         this.username = nombreUsuario;
         this.email = email;
         this.password = password;
-        this.id_Usuario = id_Usuario;
+        this.idUsuario = id_Usuario;
     }
 
     public Usuario(@NotNull String nombreUsuario, @NotNull String email, @NotNull String password) {
-
         this.username = nombreUsuario;
         this.email = email;
         this.password = password;
@@ -63,12 +64,12 @@ public class Usuario
         this.roles = roles;
     }
 
-    public int getId_Usuario() {
-        return id_Usuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setId_Usuario(int id_Usuario) {
-        this.id_Usuario = id_Usuario;
+    public void setIdUsuario(int id_Usuario) {
+        this.idUsuario = id_Usuario;
     }
 
     public String getUsername() {
@@ -95,23 +96,32 @@ public class Usuario
         this.email = email;
     }
 
-    public Collection<Compra> compraCollection() {
-        return compraCollection;
-    }
-
     public void setCompraCollection(Collection<Compra> compraCollection) {
         this.compraCollection = compraCollection;
     }
 
-    public Collection<Carrito> carritoCollection() {
-        return carritoCollection;
-    }
+    public Collection<Direccion> getDireccionCollection() {
+		return direccionCollection;
+	}
 
-    public void setCarritoCollection(Collection<Carrito> carritoCollection) {
+	public void setDireccionCollection(Collection<Direccion> direccionCollection) {
+		this.direccionCollection = direccionCollection;
+	}
+
+	public Collection<Compra> getCompraCollection() {
+		return compraCollection;
+	}
+
+	public Collection<Carrito> getCarritoCollection() {
+		return carritoCollection;
+	}
+	
+	public void setCarritoCollection (Collection<Carrito> carritoCollection) {
         this.carritoCollection = carritoCollection;
     }
-    @Override
+
+	@Override
     public String toString() {
-        return "com.example.demo.security.entity.Usuario[ idUsuario=" + id_Usuario + " ]";
+        return "com.example.demo.security.entity.Usuario[ idUsuario=" + idUsuario + " ]";
     }
 }

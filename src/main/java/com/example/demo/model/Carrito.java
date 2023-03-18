@@ -1,9 +1,9 @@
 package com.example.demo.model;
 
 import com.example.demo.security.model.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Carrito.findAll", query = "SELECT c FROM Carrito c"),
-    @NamedQuery(name = "Carrito.findByIdCarrito", query = "SELECT c FROM Carrito c WHERE c.idCarrito = :idCarrito"),
-    @NamedQuery(name = "Carrito.findByCantidad", query = "SELECT c FROM Carrito c WHERE c.cantidad = :cantidad")})
+    @NamedQuery(name = "Carrito.findByIdCarrito", query = "SELECT c FROM Carrito c WHERE c.idCarrito = :idCarrito"),})
 
 public class Carrito implements Serializable 
 {
@@ -30,7 +29,7 @@ public class Carrito implements Serializable
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false) @Column(name = "id_carrito") 
+    @Column(name = "id_carrito") 
     private Integer idCarrito;
     
     @Column(name = "cantidad")
@@ -42,10 +41,10 @@ public class Carrito implements Serializable
     
     @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
     @ManyToOne
+    @JsonIgnore
     private Usuario usuario;
 
-    public Carrito() {
-    }
+    public Carrito() {}
 
     public Carrito(Integer idCarrito) {
         this.idCarrito = idCarrito;
@@ -92,7 +91,6 @@ public class Carrito implements Serializable
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Carrito)) {
             return false;
         }

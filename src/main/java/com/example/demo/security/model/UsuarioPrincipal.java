@@ -64,9 +64,7 @@ public class UsuarioPrincipal implements UserDetails
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
- 
+    } 
 
     public String getEmail() {
         return email;

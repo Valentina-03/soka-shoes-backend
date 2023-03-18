@@ -27,7 +27,7 @@ public class ProductoRest
 
     @GetMapping
     public ResponseEntity<List<Producto>> get() {
-        return ResponseEntity.ok(service.listar());
+    	return ResponseEntity.ok(service.listar());
     }
 
     @PostMapping

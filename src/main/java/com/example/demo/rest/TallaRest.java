@@ -56,13 +56,13 @@ public class TallaRest
         return ResponseEntity.ok(nuevo);
     }
 
-    @GetMapping(path = "/{id}/cantidad")
+    /*@GetMapping(path = "/{id}/cantidad")
     public ResponseEntity<?> cantidadPorTalla(@PathVariable Integer id){
         Talla talla = service.encontrar(id).orElse(null);
         if (talla == null)
             return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
         return ResponseEntity.ok(talla.productoCollection().size());
-    }    
+    }   */ 
     
 }

@@ -43,13 +43,13 @@ public class UsuarioRest
         if (br.hasErrors())
             return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
-        Usuario usuario = service.encontrar(u.getId_Usuario()).orElse(null);
+        Usuario usuario = service.encontrar(u.getIdUsuario()).orElse(null);
         if(usuario == null)
         	return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
         
         service.guardar(u);
 
-        return ResponseEntity.ok(service.encontrar(u.getId_Usuario()));
+        return ResponseEntity.ok(service.encontrar(u.getIdUsuario()));
     }
 
     @DeleteMapping(path = "/{id}")
@@ -66,15 +66,14 @@ public class UsuarioRest
     @GetMapping(path = "/{id}/compras")
     public ResponseEntity<List<Compra>> paquetesPorUsuario(@PathVariable Integer id)
     {
-        return ResponseEntity.ok((List<Compra>)service.encontrar(id).get().compraCollection());
+        return ResponseEntity.ok((List<Compra>)service.encontrar(id).get().getCompraCollection());
     }
 
     @GetMapping(path = "/{id}/carrito")
     public ResponseEntity<List<Carrito>> carritoDeUsuario(@PathVariable int id)
     {
-        return ResponseEntity.ok((List<Carrito>)service.encontrar(id).get().carritoCollection());
+        return ResponseEntity.ok((List<Carrito>)service.encontrar(id).get().getCarritoCollection());
     }
-
 
     @GetMapping(path = "/{username}/username")
     public ResponseEntity<?> usuarioPorUsername(@PathVariable String username)

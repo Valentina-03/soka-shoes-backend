@@ -2,16 +2,15 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -20,31 +19,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "TipoIdentificacion.findAll", query = "SELECT t FROM TipoIdentificacion t"),
     @NamedQuery(name = "TipoIdentificacion.findByIdTipo", query = "SELECT t FROM TipoIdentificacion t WHERE t.idTipo = :idTipo"),
-    @NamedQuery(name = "TipoIdentificacion.findByDescripcion", query = "SELECT t FROM TipoIdentificacion t WHERE t.descripcion = :descripcion"),
-    @NamedQuery(name = "TipoIdentificacion.findByTipo", query = "SELECT t FROM TipoIdentificacion t WHERE t.tipo = :tipo")})
+    @NamedQuery(name = "TipoIdentificacion.findByNombre", query = "SELECT t FROM TipoIdentificacion t WHERE t.nombre = :nombre")})
 
 public class TipoIdentificacion implements Serializable 
 {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @Basic(optional = false)
-    @NotNull @Column(name = "id_tipo")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_tipo")
     private Integer idTipo;
     
-    @Size(max = 25)
-    @Column(name = "descripcion")
-    private String descripcion;
+    @Column(name = "nombre")
+    private String nombre;
     
-    @Size(max = 25)
-    @Column(name = "tipo")
-    private String tipo;
-    
-    @OneToMany(mappedBy = "idtipoId")
+    @OneToMany(mappedBy = "tipoId")
     private Collection<Persona> personaCollection;
 
-    public TipoIdentificacion() {
-    }
+    public TipoIdentificacion() {}
 
     public TipoIdentificacion(Integer idTipo) {
         this.idTipo = idTipo;
@@ -58,20 +50,12 @@ public class TipoIdentificacion implements Serializable
         this.idTipo = idTipo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setNombre(String tipo) {
+        this.nombre = tipo;
     }
 
     public Collection<Persona> personaCollection() {
@@ -91,7 +75,6 @@ public class TipoIdentificacion implements Serializable
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof TipoIdentificacion)) {
             return false;
         }

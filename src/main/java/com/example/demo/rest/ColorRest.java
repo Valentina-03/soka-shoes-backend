@@ -36,15 +36,15 @@ public class ColorRest {
         return ResponseEntity.ok(color);
     }
 
-    @GetMapping(path = "/{id}/cantidad")
+    /*@GetMapping(path = "/{id}/cantidad")
     public ResponseEntity<?> cantidadPorColor(@PathVariable String id){
         Color color = service.encontrar(id).orElse(null);
         if (color == null)
             return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
-        int cantidad = color.productoCollection().size();
+        int cantidad = color.getProductoCollection().size();
         return ResponseEntity.ok(cantidad);
-    }
+    }*/
     
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> encontrar(@PathVariable String id)

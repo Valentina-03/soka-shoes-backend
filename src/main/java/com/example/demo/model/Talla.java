@@ -8,13 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "talla")
@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Talla.findAll", query = "SELECT t FROM Talla t"),
     @NamedQuery(name = "Talla.findByIdTalla", query = "SELECT t FROM Talla t WHERE t.idTalla = :idTalla"),
-    @NamedQuery(name = "Talla.findByNombre", query = "SELECT t FROM Talla t WHERE t.nombre = :nombre"),
     @NamedQuery(name = "Talla.findByNumero", query = "SELECT t FROM Talla t WHERE t.numero = :numero")})
 
 public class Talla implements Serializable 
@@ -30,18 +29,16 @@ public class Talla implements Serializable
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false) @Column(name = "id_talla")
+    @Column(name = "id_talla")
     private Integer idTalla;
     
-    @Size(max = 25) @Column(name = "nombre")
-    private String nombre;
-    
     @Basic(optional = false)
-    @NotNull @Column(name = "numero")
-    private short numero;
+    @Column(name = "numero")
+    private Short numero;
     
-    @ManyToMany(mappedBy = "tallaCollection")
-    private Collection<Producto> productoCollection;
+    @OneToMany(mappedBy = "talla", orphanRemoval = true)
+    @JsonIgnore
+    private Collection<DetalleProducto> detalleProductoCollection;
 
     
     public Talla() {}
@@ -53,8 +50,7 @@ public class Talla implements Serializable
     public Talla(Integer idTalla, short numero) {
         this.idTalla = idTalla;
         this.numero = numero;
-    }
-    
+    }    
 
     public Integer getIdTalla() {
         return idTalla;
@@ -62,14 +58,6 @@ public class Talla implements Serializable
 
     public void setIdTalla(Integer idTalla) {
         this.idTalla = idTalla;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public short getNumero() {
@@ -80,12 +68,12 @@ public class Talla implements Serializable
         this.numero = numero;
     }
 
-    public Collection<Producto> productoCollection() {
-        return productoCollection;
+    public Collection<DetalleProducto> getDetalleProductoCollection() {
+        return detalleProductoCollection;
     }
 
-    public void setProductoCollection(Collection<Producto> productoCollection) {
-        this.productoCollection = productoCollection;
+    public void setProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
+        this.detalleProductoCollection = detalleProductoCollection;
     }
 
     
