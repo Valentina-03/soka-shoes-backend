@@ -9,12 +9,15 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +34,7 @@ public class Compra implements Serializable
     private static final long serialVersionUID = 1L;
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_compra")
     private Long idCompra;
     
@@ -52,10 +56,18 @@ public class Compra implements Serializable
     @JsonIgnore
     private Usuario usuario;
     
+    @JoinColumn(name = "direccion", referencedColumnName = "id_direccion")
+    @ManyToOne
+    private Direccion direccion;
+    
     @OneToMany(mappedBy = "referenceSale")
     @JsonIgnore
     private Collection<Transaccionp> transaccionpCollection;
     
+    @PrePersist
+    private void prePersist(){
+    	this.fecha = new Date();
+    }
     
     public Compra() {}
 
@@ -103,7 +115,15 @@ public class Compra implements Serializable
         this.usuario = usuario;
     }
 
-    public Collection<Transaccionp> getTransaccionpCollection() {
+    public Direccion getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
+	}
+
+	public Collection<Transaccionp> getTransaccionpCollection() {
         return transaccionpCollection;
     }
 

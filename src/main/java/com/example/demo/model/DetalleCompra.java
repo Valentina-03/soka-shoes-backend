@@ -44,7 +44,7 @@ public class DetalleCompra implements Serializable
     @JsonIgnore
     private Compra compra;
     
-    @JoinColumn(name = "detalleProducto", referencedColumnName = "id_detalle")
+    @JoinColumn(name = "detalle_producto", referencedColumnName = "id_detalle")
     @ManyToOne
     private DetalleProducto detalleProducto;
 
@@ -70,8 +70,32 @@ public class DetalleCompra implements Serializable
     public void setCompra(Compra compra) {
         this.compra = compra;
     }
+    
+    public Integer getCantidad() {
+		return cantidad;
+	}
 
-    public DetalleProducto getDetalleProducto() {
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public Double getPrecioDet() {
+		return precioDet;
+	}
+
+	public void setPrecioDet(Double precioDet) {
+		this.precioDet = precioDet;
+	}
+
+	public Double getPrecioTot() {
+		return precioTot;
+	}
+
+	public void setPrecioTot(Double precioTot) {
+		this.precioTot = precioTot;
+	}
+
+	public DetalleProducto getDetalleProducto() {
         return detalleProducto;
     }
 

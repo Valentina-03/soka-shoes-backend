@@ -13,14 +13,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "categoria")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Categoria.findAll", query = "SELECT c FROM Categoria c"),
     @NamedQuery(name = "Categoria.findByIdCategoria", query = "SELECT c FROM Categoria c WHERE c.idCategoria = :idCategoria"),
-    @NamedQuery(name = "Categoria.findByNombre", query = "SELECT c FROM Categoria c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Categoria.findByDescripcion", query = "SELECT c FROM Categoria c WHERE c.descripcion = :descripcion")})
+    @NamedQuery(name = "Categoria.findByNombre", query = "SELECT c FROM Categoria c WHERE c.nombre = :nombre")})
 
 public class Categoria implements Serializable 
 {
@@ -38,6 +39,7 @@ public class Categoria implements Serializable
     private String descripcion;
     
     @OneToMany(mappedBy = "categoria")
+    @JsonIgnore
     private Collection<Producto> productoCollection;
 
     
@@ -87,7 +89,11 @@ public class Categoria implements Serializable
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
+    public Collection<Producto> getProductoCollection() {
+		return productoCollection;
+	}
+
+	public String getDescripcion() {
         return descripcion;
     }
 

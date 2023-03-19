@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +33,9 @@ public class Direccion implements Serializable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_direccion")
     private Integer idDireccion;
+	
+	@Column(name = "nombre")
+    private String nombre;
 
     @Column(name = "direccion")
     private String direccion;
@@ -124,6 +130,22 @@ public class Direccion implements Serializable
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	
+	public double getPrecioEnvio() {
+		List<String> ciudades_principales = new ArrayList<String>();
+        ciudades_principales.add("Medellín");
+        ciudades_principales.add("Cartagena");
+        ciudades_principales.add("Calí");
+        ciudades_principales.add("Santa Marta");
+        ciudades_principales.add("Barranquilla");
+        ciudades_principales.add("Villavicencio");
+        ciudades_principales.add("San Gíl");
+        ciudades_principales.add("Bucaramanga");
+        
+        if(this.nombre.equals("Bogotá D.C")) return 8000;
+        if(ciudades_principales.contains(this.nombre)) return 10000;
+        return 18000;    
 	}
     
 }

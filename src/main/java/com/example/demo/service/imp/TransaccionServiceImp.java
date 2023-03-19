@@ -9,35 +9,43 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.service.TransaccionService;
 
 @Service
 public class TransaccionServiceImp implements TransaccionService{
 
     @Autowired
-    public TransaccionDAO pdao;
+    public TransaccionDAO tdao;
+    
     
     @Override
+    @Transactional
     public void guardar(Transaccionp payu) {
-        pdao.save(payu);
+        tdao.save(payu);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Transaccionp> listar() {
-        return pdao.findAll();
+        return tdao.findAll();
     }
 
     @Override
+    @Transactional
     public void eliminar(String id) {
-        pdao.deleteById(id);
+        tdao.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Transaccionp encontrar(String id) {
-        return pdao.findById(id).get();
+        return tdao.findById(id).get();
     }
 
 	@Override
+	@Transactional(readOnly = true)
 	public Transaccionp getDatos(Map<String, String> body) 
 	{
 		SokaShoes nexp = new SokaShoes();
@@ -63,5 +71,5 @@ public class TransaccionServiceImp implements TransaccionService{
         pay.setValue(Long.parseLong(body.get("value").split("\\.")[0]));
 		
         return pay;
-	}    
+	}   
 }

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,7 +30,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
     @NamedQuery(name = "Producto.findByIdProducto", query = "SELECT p FROM Producto p WHERE p.idProducto = :idProducto"),
     @NamedQuery(name = "Producto.findByNombre", query = "SELECT p FROM Producto p WHERE p.nombre = :nombre"),
     @NamedQuery(name = "Producto.findByEstado", query = "SELECT p FROM Producto p WHERE p.estado = :estado"),
-    @NamedQuery(name = "Producto.findByMarca", query = "SELECT p FROM Producto p WHERE p.marca = :marca")})
+    @NamedQuery(name = "Producto.findByMarca", query = "SELECT p FROM Producto p WHERE p.marca = :marca"),
+    @NamedQuery(name = "Producto.findByCategoria", query = "SELECT p FROM Producto p WHERE p.categoria = :categoria")})
 
 public class Producto implements Serializable 
 {
@@ -75,10 +77,11 @@ public class Producto implements Serializable
     @JsonIgnore
     private Collection<DetalleProducto> detalleProductoCollection;
     
-    /*@OneToMany(mappedBy = "producto")
-    @JsonIgnore
-    private Collection<Carrito> carritoCollection;*/
-    
+    @PrePersist
+    private void prePersist(){
+    	this.createdAt = new Date();
+    	this.updatedAt = this.createdAt;
+    }
     
     public Producto() {}
 
@@ -125,14 +128,6 @@ public class Producto implements Serializable
     public void setDetalleProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
         this.detalleProductoCollection = detalleProductoCollection;
     }
-
-    /*public Collection<Carrito> getCarritoCollection() {
-        return carritoCollection;
-    }
-
-    public void setCarritoCollection(Collection<Carrito> carritoCollection) {
-        this.carritoCollection = carritoCollection;
-    }*/
 
     public int getCantidad() {
         return cantidad;

@@ -24,20 +24,11 @@ public class PersonaRest
         return ResponseEntity.ok(service.listar());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Persona> eliminar(@PathVariable Integer id) 
-    {
-        Persona p = service.encontrar(id).orElse(null);
-        service.eliminar(id);
-        return ResponseEntity.ok(p);
-    }
-    
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> encontrar(@PathVariable Integer id) 
     {
         Persona p = service.encontrar(id).orElse(null);
-        if (p == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
         return ResponseEntity.ok(p);
     }
@@ -45,11 +36,30 @@ public class PersonaRest
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Persona p, BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         service.guardar(p);
         return ResponseEntity.ok(p);
     }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<?> editar(@RequestBody @Valid Persona actual, BindingResult br, @PathVariable Integer id) 
+    {
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        Persona nuevo = service.encontrar(id).orElse(null);        
+        if(nuevo == null) return new ResponseEntity<>("Compra no existente", HttpStatus.NOT_FOUND);
+        
+        service.guardar(nuevo);
+        return ResponseEntity.ok(nuevo);
+    } 
     
+    @DeleteMapping(path = "/{id}")    
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    {
+        Persona p = service.encontrar(id).orElse(null);
+        if (p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        
+        service.eliminar(id);
+        return ResponseEntity.ok(p);
+    }
 }

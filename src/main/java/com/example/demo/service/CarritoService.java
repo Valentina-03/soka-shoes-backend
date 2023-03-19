@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CarritoService {
         
     public void guardar(Carrito carrito);
-    public void eliminar(int id);
-    public Optional<Carrito> encontrar(int id);
+    public void eliminar(Long id);
+    public Optional<Carrito> encontrar(Long id);
     public List<Carrito> listar();
 }

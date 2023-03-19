@@ -4,7 +4,6 @@ import com.example.demo.model.Carrito;
 import com.example.demo.security.model.Usuario;
 import com.example.demo.security.servicio.UsuarioService;
 import com.example.demo.service.CarritoService;
-import com.example.demo.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -25,17 +26,50 @@ public class CarritoRest
 
     @Autowired
     private UsuarioService user_service;
-
-    @Autowired
-    private ProductoService producto_service;
+    
 
     @GetMapping
     public ResponseEntity<List<Carrito>> get() {
         return ResponseEntity.ok(service.listar());
     }
+    
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> encontrar(@PathVariable Long id) 
+    {
+	    Carrito carrito = service.encontrar(id).orElse(null);
+	    if (carrito == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+	    
+	    return ResponseEntity.ok(carrito);
+	}
 
+    @PostMapping
+    public ResponseEntity<?> guardar(@RequestBody @Valid Carrito c, BindingResult br) 
+    {
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        Usuario u = user_service.encontrar(c.getUsuario().getIdUsuario()).orElse(null);
+        if(u== null) return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
+        
+        service.guardar(c);
+        Collection<Carrito> uc = u.getCarritoCollection(); uc.add(c);        
+        u.setCarritoCollection(uc);
+        user_service.guardar(u);        
+        return ResponseEntity.ok(c);
+    }
+    
+    @PutMapping
+    public ResponseEntity<?> editar(@RequestBody @Valid Carrito c, BindingResult br)
+    {
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        
+        Carrito carrito = service.encontrar(c.getIdCarrito()).orElse(null);
+        if(carrito == null) return new ResponseEntity<>("Carrito no existente", HttpStatus.NOT_FOUND);
+        
+        service.guardar(c);
+        return ResponseEntity.ok(service.encontrar(c.getIdCarrito()));
+    }
+    
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    public ResponseEntity<?> eliminar(@PathVariable Long id) 
     {
         Carrito carrito = service.encontrar(id).orElse(null);
         if (carrito == null)
@@ -45,58 +79,37 @@ public class CarritoRest
         return ResponseEntity.ok(carrito);
     }
 
-    @GetMapping(path = "/{id}")
-        public ResponseEntity<?> encontrarCarrito(@PathVariable Integer id) 
-    {
-        Carrito carrito = service.encontrar(id).orElse(null);
-        if (carrito == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        
-        return ResponseEntity.ok(carrito);
-    }
-
-    @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody @Valid Carrito c, BindingResult br) 
-    {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
-        
-        Usuario u = user_service.encontrar(c.getUsuario().getIdUsuario()).orElse(null);
-
-        for(Carrito carrito: u.getCarritoCollection())
-            if(carrito.getProducto().getIdProducto() == c.getProducto().getIdProducto()){
-                return ResponseEntity.ok(c);
-        }
-
-        c.setProducto(this.producto_service.encontrar(c.getProducto().getIdProducto()).get());
-        service.guardar(c);
-        return ResponseEntity.ok(c);
-    }
-
-    @PatchMapping(path = "/grupo")
+    @GetMapping(path = "/grupo")
     public ResponseEntity<?> guardarTodos(@RequestBody @Valid Carrito c[], BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+    	if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        Usuario u = user_service.encontrar(c[0].getUsuario().getIdUsuario()).orElse(null);
+        if(u == null) return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
         
-        for(Carrito carrito: c)
-            service.guardar(carrito);
-
+        Collection<Carrito> uc = u.getCarritoCollection();
+        for(Carrito i: c) {
+        	if(i.getUsuario().getIdUsuario() != u.getIdUsuario()) return new ResponseEntity<>("Carritos de diferentes usuarios", HttpStatus.BAD_REQUEST);
+        	service.guardar(i);
+            uc.add(i);                
+        }
+        
+        u.setCarritoCollection(uc);
+        user_service.guardar(u);            
         return ResponseEntity.ok(c);
     }
-
-    @PutMapping
-    public ResponseEntity<?> editar(@RequestBody @Valid Carrito c, BindingResult br)
+    
+    @DeleteMapping(path = "/grupo/eliminar")
+    public ResponseEntity<?> eliminarTodos(@RequestBody @Valid Carrito c[], BindingResult br) 
     {
         if (br.hasErrors())
             return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
-        Carrito carrito = service.encontrar(c.getIdCarrito()).orElse(null);
-        if(carrito == null)
-        	return new ResponseEntity<>("Carrito no existente", HttpStatus.NOT_FOUND);
-        
-        service.guardar(c);
-        return ResponseEntity.ok(service.encontrar(c.getIdCarrito()));
-    }
+        for(Carrito carrito: c) {
+        	Carrito x = service.encontrar(carrito.getIdCarrito()).orElse(null);
+        	if(x == null) continue;
+            service.eliminar(x.getIdCarrito());
+        }
 
+        return ResponseEntity.ok(c);
+    }
 }

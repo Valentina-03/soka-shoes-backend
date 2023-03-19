@@ -2,8 +2,10 @@ package com.example.demo.rest;
 
 import com.example.demo.model.Carrito;
 import com.example.demo.model.Compra;
+import com.example.demo.model.Persona;
 import com.example.demo.security.model.Usuario;
 import com.example.demo.security.servicio.UsuarioService;
+import com.example.demo.service.PersonaService;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -21,6 +23,9 @@ public class UsuarioRest
 {
     @Autowired
     private UsuarioService service;
+    
+    @Autowired
+    private PersonaService persona_service;
 
     @GetMapping
     public ResponseEntity<List<Usuario>> get() {
@@ -56,9 +61,11 @@ public class UsuarioRest
     public ResponseEntity<?> eliminar(@PathVariable Integer id) 
     {
         Usuario u = service.encontrar(id).orElse(null);
-        if(u == null)
-        	return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if(u == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        Persona p = persona_service.encontrar(id).orElse(null);
+        if(p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
+        persona_service.eliminar(p.getIdPersona());
         service.eliminar(id);
         return ResponseEntity.ok(u);
     }

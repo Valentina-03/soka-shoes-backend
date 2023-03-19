@@ -29,8 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Persona.findBySdoApell", query = "SELECT p FROM Persona p WHERE p.sdoApell = :sdoApell"),
     @NamedQuery(name = "Persona.findByFechaNac", query = "SELECT p FROM Persona p WHERE p.fechaNac = :fechaNac"),
     @NamedQuery(name = "Persona.findByCelular", query = "SELECT p FROM Persona p WHERE p.celular = :celular"),})
-public class Persona implements Serializable {
-
+public class Persona implements Serializable 
+{
     private static final long serialVersionUID = 1L;
     
     @Id

@@ -12,8 +12,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "marca")
@@ -33,10 +34,10 @@ public class Marca implements Serializable
     private Integer idMarca;
     
     @Column(name = "nombre")
-    @NotNull
     private String nombre;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "marca")
+    @JsonIgnore
     private Collection<Producto> productoCollection;
 
     
@@ -67,7 +68,7 @@ public class Marca implements Serializable
         this.nombre = nombre;
     }
 
-    public Collection<Producto> productoCollection() {
+    public Collection<Producto> getProductoCollection() {
         return productoCollection;
     }
 

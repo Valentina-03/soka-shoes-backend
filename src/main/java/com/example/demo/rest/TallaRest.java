@@ -20,28 +20,28 @@ public class TallaRest
     @Autowired
     private TallaService service;
     
+    @GetMapping(path = "/{id}/cantidad")
+    public ResponseEntity<?> getCantidad(@PathVariable Integer id)
+    {
+        return ResponseEntity.ok(service.getProductos(id).size());
+    }
+    
+    @GetMapping(path = "/{id}/productos")
+    public ResponseEntity<?> getProductos(@PathVariable Integer id)
+    {
+        return ResponseEntity.ok(service.getProductos(id));
+    }
+    
     @GetMapping
     public ResponseEntity<List<Talla>> get() {
         return ResponseEntity.ok(service.listar());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
-    {
-        Talla talla = service.encontrar(id).orElse(null);
-        if (talla == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        
-        service.eliminar(id);        
-        return ResponseEntity.ok(talla);
-    }
-    
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> encontrar(@PathVariable Integer id)
     {
         Talla talla = service.encontrar(id).orElse(null);
-        if (talla == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (talla == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
         return ResponseEntity.ok(talla);
     }
@@ -49,20 +49,19 @@ public class TallaRest
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Talla nuevo, BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         service.guardar(nuevo);
         return ResponseEntity.ok(nuevo);
     }
 
-    /*@GetMapping(path = "/{id}/cantidad")
-    public ResponseEntity<?> cantidadPorTalla(@PathVariable Integer id){
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    {
         Talla talla = service.encontrar(id).orElse(null);
-        if (talla == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (talla == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
-        return ResponseEntity.ok(talla.productoCollection().size());
-    }   */ 
-    
+        service.eliminar(id);        
+        return ResponseEntity.ok(talla);
+    }
 }

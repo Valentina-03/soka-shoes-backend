@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tipo_identificacion")
 @XmlRootElement
@@ -34,6 +36,7 @@ public class TipoIdentificacion implements Serializable
     private String nombre;
     
     @OneToMany(mappedBy = "tipoId")
+    @JsonIgnore
     private Collection<Persona> personaCollection;
 
     public TipoIdentificacion() {}
@@ -58,7 +61,7 @@ public class TipoIdentificacion implements Serializable
         this.nombre = tipo;
     }
 
-    public Collection<Persona> personaCollection() {
+    public Collection<Persona> getPersonaCollection() {
         return personaCollection;
     }
 

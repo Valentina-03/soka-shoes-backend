@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "detalle_producto")
@@ -33,7 +29,7 @@ public class DetalleProducto implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle")
-    private String idDetalle;
+    private Integer idDetalle;
     
     @Column(name= "url_img")
     private String img;
@@ -53,23 +49,19 @@ public class DetalleProducto implements Serializable
     @JoinColumn(name = "talla", referencedColumnName = "id_talla")    
     private Talla talla;
     
-    @OneToMany(mappedBy = "detalleProducto")
-    @JsonIgnore
-    private Collection<DetalleCompra> detalleCompraCollection;
-    
     
     public DetalleProducto() {}
 
-    public DetalleProducto(String idDetalle) {
+    public DetalleProducto(Integer idDetalle) {
         this.idDetalle = idDetalle;
     }
     
 
-   public String getIdDetalle() {
+   public Integer getIdDetalle() {
 		return idDetalle;
 	}
 
-	public void setIdDetalle(String idDetalle) {
+	public void setIdDetalle(Integer idDetalle) {
 		this.idDetalle = idDetalle;
 	}
 
@@ -113,14 +105,7 @@ public class DetalleProducto implements Serializable
 		this.cantidad = cantidad;
 	}
 
-	public Collection<DetalleCompra> getDetalleCompraCollection() {
-		return detalleCompraCollection;
-	}
-
-	public void setDetalleCompraCollection(Collection<DetalleCompra> detalleCompraCollection) {
-		this.detalleCompraCollection = detalleCompraCollection;
-	}
-
+	
 	@Override
     public int hashCode() {
         int hash = 0;

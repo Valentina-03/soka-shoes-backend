@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,20 +30,11 @@ public class RolRest
         return ResponseEntity.ok(service.listar());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Rol> eliminar(@PathVariable Integer id) 
-    {
-        Rol r = service.encontrar(id).orElse(null);
-        service.eliminar(id);
-        return ResponseEntity.ok(r);
-    }
-    
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> encontrar(@PathVariable Integer id) 
     {
         Rol r = service.encontrar(id).orElse(null);
-        if (r == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (r == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
         return ResponseEntity.ok(r);
     }
@@ -52,11 +42,9 @@ public class RolRest
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Rol r, BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         service.save(r);
         return ResponseEntity.ok(r);
-    }
-    
+    }   
 }

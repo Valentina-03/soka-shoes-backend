@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "departamento")
 @XmlRootElement
@@ -36,7 +34,6 @@ public class Departamento implements Serializable
     private String nombre;
     
     @OneToMany(mappedBy = "departamento")
-    @JsonIgnore
     private Collection<Ciudad> ciudadCollection;
 
     
@@ -86,12 +83,11 @@ public class Departamento implements Serializable
         this.nombre = nombre;
     }
 
-    public Collection<Ciudad> getCiudadCollection() {
-        return ciudadCollection;
-    }
+	public Collection<Ciudad> getCiudadCollection() {
+		return ciudadCollection;
+	}
 
-    public void setCiudadCollection(Collection<Ciudad> ciudadCollection) {
-        this.ciudadCollection = ciudadCollection;
-    }
-    
+	public void setCiudadCollection(Collection<Ciudad> ciudadCollection) {
+		this.ciudadCollection = ciudadCollection;
+	}    
 }

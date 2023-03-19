@@ -24,7 +24,9 @@ public class CarritoServiceImp implements CarritoService {
 
     @Override
     @Transactional(readOnly = true )
-    public Optional<Carrito> encontrar(int id) { return cDAO.findById(id);}
+    public Optional<Carrito> encontrar(Long id) { 
+    	return cDAO.findById(id);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -33,8 +35,8 @@ public class CarritoServiceImp implements CarritoService {
     }
 
     @Override
-    public void eliminar(int id) {
+    @Transactional
+    public void eliminar(Long id) {
         cDAO.deleteById(id);
-    }
-    
+    }   
 }

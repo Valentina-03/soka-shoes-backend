@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +31,6 @@ public class Talla implements Serializable
     @Column(name = "id_talla")
     private Integer idTalla;
     
-    @Basic(optional = false)
     @Column(name = "numero")
     private Short numero;
     

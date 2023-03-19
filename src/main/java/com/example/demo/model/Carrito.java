@@ -30,14 +30,14 @@ public class Carrito implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_carrito") 
-    private Integer idCarrito;
+    private Long idCarrito;
     
     @Column(name = "cantidad")
     private Integer cantidad;
     
-    @JoinColumn(name = "producto", referencedColumnName = "id_producto")
+    @JoinColumn(name = "detalle_producto", referencedColumnName = "id_detalle")
     @ManyToOne
-    private Producto producto;
+    private DetalleProducto detalle;
     
     @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
     @ManyToOne
@@ -46,15 +46,15 @@ public class Carrito implements Serializable
 
     public Carrito() {}
 
-    public Carrito(Integer idCarrito) {
+    public Carrito(Long idCarrito) {
         this.idCarrito = idCarrito;
     }
 
-    public Integer getIdCarrito() {
+    public Long getIdCarrito() {
         return idCarrito;
     }
 
-    public void setIdCarrito(Integer idCarrito) {
+    public void setIdCarrito(Long idCarrito) {
         this.idCarrito = idCarrito;
     }
 
@@ -66,12 +66,12 @@ public class Carrito implements Serializable
         this.cantidad = cantidad;
     }
 
-    public Producto getProducto() {
-        return producto;
+    public DetalleProducto getDetalleProducto() {
+        return detalle;
     }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    public void setDetalleProducto(DetalleProducto detalle) {
+        this.detalle = detalle;
     }
 
     public Usuario getUsuario() {

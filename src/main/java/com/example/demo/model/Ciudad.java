@@ -60,14 +60,6 @@ public class Ciudad implements Serializable
         this.nombre = nombre;
     }
 
-	public Departamento getDepartamento() {
-		return departamento;
-	}
-
-	public void setDepartamento(Departamento departamento) {
-		this.departamento = departamento;
-	}
-
 	@Override
     public int hashCode() {
         int hash = 0;

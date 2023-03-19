@@ -47,17 +47,16 @@ public class TransaccionRest
         Transaccionp pay = service.getDatos(body);        
         Compra compra = compra_service.encontrar(Long.parseLong(body.get("reference_sale"))).get();
         
-        if (pay.getResponseMessagePol().equals("APPROVED") && pay.getValue() == (double) compra.getTotalCompra()) {
-            if (pay.getValue() == (double) compra.getTotalCompra()) {
+        if (pay.getResponseMessagePol().equals("APPROVED") && pay.getValue() >= (double) compra.getTotalCompra()) {
+            if (pay.getValue() >= (double) compra.getTotalCompra()) {
                 pay.setReferenceSale(compra);
                 compra.setEstado("APROBADA");
                 compra_service.guardar(compra);
             } else 
-                compra_service.eliminar(compra.getIdCompra());
+            	compra.setEstado("FALLO EN PAGO");
+            	compra_service.guardar(compra);
         }
-
         service.guardar(pay);
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
-
 }

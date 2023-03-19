@@ -20,28 +20,32 @@ public class MarcaRest
     @Autowired
     private MarcaService service;
 
+    @GetMapping(path = "/{id}/productos")
+    public ResponseEntity<?> getProductos(@PathVariable Integer id){
+    	Marca marca = service.encontrar(id).orElse(null);
+    	if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+    	
+    	return ResponseEntity.ok(marca.getProductoCollection());
+    }
+    
+    @GetMapping(path = "/{id}/cntproductos")
+    public ResponseEntity<?> getCntProductos(@PathVariable Integer id){
+    	Marca marca = service.encontrar(id).orElse(null);
+    	if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+    	
+    	return ResponseEntity.ok(marca.getProductoCollection().size());
+    }
+    
     @GetMapping
     public ResponseEntity<List<Marca>> get() {
         return ResponseEntity.ok(service.listar());
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
-    {
-        Marca marca = service.encontrar(id).orElse(null);
-        if (marca == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        
-        service.eliminar(id);        
-        return ResponseEntity.ok(marca);
-    }
-    
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> encontrar(@PathVariable Integer id)
     {
         Marca marca = service.encontrar(id).orElse(null);
-        if (marca == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
         return ResponseEntity.ok(marca);
     }
@@ -49,8 +53,7 @@ public class MarcaRest
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Marca nuevo, BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         service.guardar(nuevo);
         return ResponseEntity.ok(nuevo);
@@ -59,14 +62,12 @@ public class MarcaRest
     @PutMapping
     public ResponseEntity<?> editar(@RequestBody @Valid Marca actual, BindingResult br)
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         Marca nuevo = service.encontrar(actual.getIdMarca()).orElse(null);
         if(nuevo == null) return new ResponseEntity<>("Marca no existente", HttpStatus.NOT_FOUND);
         
         service.guardar(actual);
-
         return ResponseEntity.ok(service.encontrar(actual.getIdMarca()));
     }
     
@@ -74,10 +75,19 @@ public class MarcaRest
     public ResponseEntity<?> getCantidad(@PathVariable Integer id) 
     {
         Marca marca = service.encontrar(id).orElse(null);
-        if (marca == null)
-            return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok( marca.productoCollection().size());
+        return ResponseEntity.ok( marca.getProductoCollection().size());
+    }
+    
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    {
+        Marca marca = service.encontrar(id).orElse(null);
+        if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+        
+        service.eliminar(id);        
+        return ResponseEntity.ok(marca);
     }
     
 }

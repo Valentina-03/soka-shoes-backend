@@ -10,7 +10,7 @@ public class Rol
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol")
-    private int idRol;
+    private Integer idRol;
 
     public enum RolNombre {
     	ROLE_ADMIN, ROLE_USER

@@ -34,7 +34,7 @@ public class Usuario
     @OneToMany(mappedBy = "usuario")
     private Collection<Compra> compraCollection;
     
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true)
     private Collection<Carrito> carritoCollection;
     
     @ManyToMany(fetch = FetchType.EAGER)
