@@ -10,6 +10,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +30,18 @@ public class ProductoRest
     	return ResponseEntity.ok(service.obtenerDetalle(id, color, talla, cantidad));
     }
     
-    @GetMapping
-    public ResponseEntity<List<Producto>> getProductosDisponibles(){
-    	return ResponseEntity.ok(service.listarDisponibles());
+    @PostMapping("/filtrar")
+    public ResponseEntity<?> getProductosByFiltro(@RequestBody List<List<String>> ids)
+    {
+    	List<List<String>> l = new ArrayList<List<String>>();
+    	l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>());
+    	l.get(0).add("1");
+    	l.get(1).add("1");
+    	l.get(2).add("FFFFFF"); l.get(2).add("FF0000");
+    	l.get(3).add("34"); l.get(3).add("35");
+    	l.get(4).add("0"); l.get(4).add("200000");
+    	
+    	return ResponseEntity.ok(service.filtrar(ids));
     }
     
     @GetMapping("/{id}/detalles")
@@ -41,6 +52,11 @@ public class ProductoRest
     @GetMapping("/{marca}/{categoria}/{color}/{talla}/{precio_min}/{precio_max}")
     public ResponseEntity<?> getProductosFiltro(@PathVariable Integer marca, @PathVariable Integer categoria, @PathVariable String color, @PathVariable Integer talla, @PathVariable Double precio_min, @PathVariable Double precio_max){
     	return ResponseEntity.ok(service.filtrar(marca, categoria, color, talla, precio_min, precio_max));
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<Producto>> getProductosDisponibles(){
+    	return ResponseEntity.ok(service.listarDisponibles());
     }
     
     @GetMapping(path = "/cantidadDisponible")
@@ -112,7 +128,6 @@ public class ProductoRest
         return ResponseEntity.ok(p);
     }
     
-
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Integer id)
     {

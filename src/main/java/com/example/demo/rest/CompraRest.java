@@ -89,7 +89,7 @@ public class CompraRest {
         return ResponseEntity.ok(nuevo);
     } 
 
-    @PostMapping(path = "/{idUsuario}/{direccion}")
+    @GetMapping(path = "/{idUsuario}/{direccion}")
     public ResponseEntity<?> guardar(@PathVariable Integer idUsuario, @PathVariable Integer direccion) 
     {
         Usuario u = user_service.encontrar(idUsuario).orElse(null);

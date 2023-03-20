@@ -15,5 +15,6 @@ public interface ProductoService {
 	public List<Producto> listarDisponibles();
 	public List<ProductoDeatllesDto> obtenerDetalles(Integer id);
 	public List<Producto> filtrar(Integer marca, Integer categoria, String color, Integer talla, Double precio_min, Double precio_max);
+	public List<Producto> filtrar(List<List<String>> ids);
 	public int obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad);
 }

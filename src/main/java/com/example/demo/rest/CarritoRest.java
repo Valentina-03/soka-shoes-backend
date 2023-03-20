@@ -79,7 +79,7 @@ public class CarritoRest
         return ResponseEntity.ok(carrito);
     }
 
-    @GetMapping(path = "/grupo")
+    @PatchMapping(path = "/grupo")
     public ResponseEntity<?> guardarTodos(@RequestBody @Valid Carrito c[], BindingResult br) 
     {
     	if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
@@ -98,7 +98,7 @@ public class CarritoRest
         return ResponseEntity.ok(c);
     }
     
-    @DeleteMapping(path = "/grupo/eliminar")
+    @PatchMapping(path = "/grupo/eliminar")
     public ResponseEntity<?> eliminarTodos(@RequestBody @Valid Carrito c[], BindingResult br) 
     {
         if (br.hasErrors())

@@ -103,6 +103,41 @@ public class ProductoServiceImp implements ProductoService {
 		return detalles;
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public int obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
+	{
+		Integer d = dpDAO.getProductsByAll(id, color, talla);
+		DetalleProducto detalle = dpDAO.findById(d).orElse(null);
+		if(detalle == null) return -1;
+		if(detalle.getCantidad() < cantidad) return 0;
+		return detalle.getIdDetalle();
+	}
+
+	@Override
+	public List<Producto> filtrar(List<List<String>> body) 
+	{
+		List<Producto> productos = new ArrayList<>();
+		List<Integer> ids = new ArrayList<Integer>();
+		if(body.get(0).isEmpty() && body.get(1).isEmpty() && body.get(4).isEmpty())
+			ids = pDAO.getDisponibles();
+		else ids = getProductosFilter(body);
+		
+		if(ids.isEmpty()) return productos;		
+		if(!body.get(2).isEmpty()) ids = getDetallesFilter(ids, body.get(2));
+		int min = -1, max = -1;
+		if(!body.get(3).isEmpty()) { min = Integer.parseInt(body.get(3).get(0)); max = Integer.parseInt(body.get(3).get(1));}
+		
+		for(int i : ids) {
+			DetalleProducto dp = dpDAO.findById(i).orElse(null);
+			if(min != -1) {
+				if(dp.getTalla().getNumero() >= min && dp.getTalla().getNumero() <= max)
+					productos.add(dp.getProducto());
+			}else productos.add(dp.getProducto()); 
+		}
+		return productos;
+	}
+	
 	private List<Integer> getIds(Integer marca, Integer categoria, String color, Integer talla, Double precio_min, Double precio_max){
 		String query = "SELECT id_producto FROM producto WHERE ";
 		boolean ant = false;
@@ -128,15 +163,49 @@ public class ProductoServiceImp implements ProductoService {
 		}
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public int obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
-	{
-		Integer d = dpDAO.getProductsByAll(id, color, talla);
-		DetalleProducto detalle = dpDAO.findById(d).orElse(null);
-		if(detalle == null) return -1;
-		if(detalle.getCantidad() < cantidad) return 0;
-		return detalle.getIdDetalle();
-	}    
+	
+	private List<Integer> getProductosFilter(List<List<String>> ids){
+		String query = "SELECT id_producto FROM producto WHERE estado = 1 AND (";
+		boolean ant = false;
+		
+		List<String> aux = ids.get(0);	
+		for(int i = 0; i<aux.size(); i++) {
+			if(ant) query += " OR ";
+			query += "marca = " + aux.get(i);
+			ant = true;
+		}		
+		aux = ids.get(1);	
+		for(int i = 0; i<aux.size(); i++) {
+			if(ant) query += " OR ";
+			query += "categoria = " + aux.get(i);
+			ant = true;
+		}
+		
+		aux = ids.get(4);
+		if(aux.size() > 0) {
+			if(ids.get(0).isEmpty() && ids.get(1).isEmpty())
+				query += "precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
+			else query += ") AND (precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
+		}
+		
+		System.out.println(query);	
+		return (List<Integer>) em.createNativeQuery(query).getResultList();
+	}
+	
+	private List<Integer> getDetallesFilter(List<Integer> ids, List<String> colores){
+		String query = "SELECT id_detalle FROM detalle_producto WHERE (";
+		
+		for(int i = 0; i<ids.size(); i++) {
+			if(i!=0) query += " OR ";
+			query += "producto = " + ids.get(i);
+		} query += ") AND (";
+		
+		for(int i = 0; i<colores.size(); i++) {
+			if(i!=0) query += " OR ";
+			query += "color = '" + colores.get(i) + "'";
+		}query += ") GROUP BY producto";
+		
+		System.out.println(query);	
+		return (List<Integer>) em.createNativeQuery(query).getResultList();
+	}
 }

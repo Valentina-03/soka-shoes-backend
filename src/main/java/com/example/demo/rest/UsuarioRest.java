@@ -31,12 +31,20 @@ public class UsuarioRest
     public ResponseEntity<List<Usuario>> get() {
         return ResponseEntity.ok(service.listar());
     }
+    
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> encontrar(@PathVariable Integer id)
+    {
+        Usuario usuario = service.encontrar(id).orElse(null);
+        if(usuario == null) return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
+        
+        return ResponseEntity.ok(usuario);
+    }
 
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Usuario u, BindingResult br) 
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         service.guardar(u);
         return ResponseEntity.ok(u);
@@ -45,15 +53,12 @@ public class UsuarioRest
     @PutMapping
     public ResponseEntity<?> editar(@RequestBody @Valid Usuario u, BindingResult br)
     {
-        if (br.hasErrors())
-            return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         
         Usuario usuario = service.encontrar(u.getIdUsuario()).orElse(null);
-        if(usuario == null)
-        	return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
+        if(usuario == null) return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
         
         service.guardar(u);
-
         return ResponseEntity.ok(service.encontrar(u.getIdUsuario()));
     }
 
@@ -71,7 +76,7 @@ public class UsuarioRest
     }
   
     @GetMapping(path = "/{id}/compras")
-    public ResponseEntity<List<Compra>> paquetesPorUsuario(@PathVariable Integer id)
+    public ResponseEntity<List<Compra>> comprasPorUsuario(@PathVariable Integer id)
     {
         return ResponseEntity.ok((List<Compra>)service.encontrar(id).get().getCompraCollection());
     }
@@ -92,7 +97,7 @@ public class UsuarioRest
         return ResponseEntity.ok(u);
     }
 
-    @GetMapping(path = "/cantidadclientes")
+    @GetMapping(path = "/cantidadClientes")
     public ResponseEntity<?> getClientesRegistrados() 
     {
         return ResponseEntity.ok(service.listar().size());
