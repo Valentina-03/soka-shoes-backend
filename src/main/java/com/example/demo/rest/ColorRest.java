@@ -21,7 +21,7 @@ public class ColorRest {
     @Autowired
     private ColorService service;
 
-    @GetMapping(path = "/{id}/cantidad")
+    @GetMapping(path = "/{id}/cntProductos")
     public ResponseEntity<?> getCantidad(@PathVariable String id)
     {
         return ResponseEntity.ok(service.getProductos(id).size());

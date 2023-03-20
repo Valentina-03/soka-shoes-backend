@@ -4,21 +4,15 @@ import com.example.demo.dao.DetalleProductoDAO;
 import com.example.demo.dao.ProductoDAO;
 import com.example.demo.model.DetalleProducto;
 import com.example.demo.model.Producto;
-import com.example.demo.model.Talla;
+import com.example.demo.model.ProductoDeatllesDto;
 import com.example.demo.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -85,22 +79,28 @@ public class ProductoServiceImp implements ProductoService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Map<Pair<String, String>, Set<Talla>> obtenerDetalles(Integer id) 
+	public List<ProductoDeatllesDto> obtenerDetalles(Integer id) 
 	{
-		Map<Pair<String, String>, Set<Talla>> ans = new HashMap<>();
+		List<ProductoDeatllesDto> detalles = new ArrayList<>();
 		Producto p = pDAO.findById(id).orElse(null);
-		Collection<DetalleProducto> d = p.getDetalleProductoCollection();
+		List<DetalleProducto> d = (List<DetalleProducto>) p.getDetalleProductoCollection();
 		
-		for(DetalleProducto i: d) {
-			if(i.getCantidad() < 0) continue;
-			Pair<String, String> aux = Pair.of(i.getColor().getIdColor(), i.getImg());
-			System.out.println(aux.toString());
-			if(!ans.containsKey(aux))
-				ans.put(aux, new HashSet<>());
-			ans.get(aux).add(i.getTalla());
+		for(DetalleProducto i: d){
+			if(i.getCantidad() < 0) continue;			
+			ProductoDeatllesDto aux = new ProductoDeatllesDto();
+			aux.setIdDetalle(i.getIdDetalle());
+			aux.setColor(i.getColor());
+			int it = detalles.indexOf(aux);
+			
+			if(it == -1) {
+				aux.setUrl(i.getImg());
+				aux.addTalla(i.getTalla());
+				detalles.add(aux);
+			}else
+				detalles.get(it).addTalla(i.getTalla());
 		}
 		
-		return ans;
+		return detalles;
 	}
 	
 	private List<Integer> getIds(Integer marca, Integer categoria, String color, Integer talla, Double precio_min, Double precio_max){

@@ -49,7 +49,8 @@ public class ProductoRest
         List<Producto> productos = service.listar();
         long cantidad = 0;
         for (int i = 0; i < productos.size(); i++) {
-            cantidad += productos.get(i).getCantidad();
+        	if(productos.get(i).getEstado())
+        		cantidad += productos.get(i).getCantidad();
         }
         return ResponseEntity.ok(cantidad);
     }

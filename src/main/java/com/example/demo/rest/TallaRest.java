@@ -20,16 +20,16 @@ public class TallaRest
     @Autowired
     private TallaService service;
     
-    @GetMapping(path = "/{id}/cantidad")
-    public ResponseEntity<?> getCantidad(@PathVariable Integer id)
-    {
-        return ResponseEntity.ok(service.getProductos(id).size());
-    }
-    
     @GetMapping(path = "/{id}/productos")
     public ResponseEntity<?> getProductos(@PathVariable Integer id)
     {
         return ResponseEntity.ok(service.getProductos(id));
+    }
+    
+    @GetMapping(path = "/{id}/cntProductos")
+    public ResponseEntity<?> getCantidad(@PathVariable Integer id)
+    {
+        return ResponseEntity.ok(service.getProductos(id).size());
     }
     
     @GetMapping

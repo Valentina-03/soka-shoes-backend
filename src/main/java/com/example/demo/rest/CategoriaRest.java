@@ -28,7 +28,7 @@ public class CategoriaRest
     	return ResponseEntity.ok(categoria.getProductoCollection());
     }
     
-    @GetMapping(path = "/{id}/cntproductos")
+    @GetMapping(path = "/{id}/cntProductos")
     public ResponseEntity<?> getCntProductos(@PathVariable Integer id){
     	Categoria categoria = service.encontrar(id).orElse(null);
     	if (categoria == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);

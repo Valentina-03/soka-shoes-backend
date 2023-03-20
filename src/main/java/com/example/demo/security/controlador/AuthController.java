@@ -29,8 +29,8 @@ import com.example.demo.security.servicio.RolService;
 import com.example.demo.security.servicio.UsuarioService;
 
 @RestController
-@RequestMapping("/auth")
-@CrossOrigin
+@RequestMapping("/api/auth")
+@CrossOrigin(origins= "*")
 @Slf4j
 public class AuthController {
 

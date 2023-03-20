@@ -28,7 +28,7 @@ public class MarcaRest
     	return ResponseEntity.ok(marca.getProductoCollection());
     }
     
-    @GetMapping(path = "/{id}/cntproductos")
+    @GetMapping(path = "/{id}/cntProductos")
     public ResponseEntity<?> getCntProductos(@PathVariable Integer id){
     	Marca marca = service.encontrar(id).orElse(null);
     	if (marca == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
