@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -119,12 +121,14 @@ public class ProductoServiceImp implements ProductoService {
 	{
 		List<Producto> productos = new ArrayList<>();
 		List<Integer> ids = new ArrayList<Integer>();
-		if(body.get(0).isEmpty() && body.get(1).isEmpty() && body.get(4).isEmpty())
-			ids = pDAO.getDisponibles();
-		else ids = getProductosFilter(body);
+		boolean first = !body.get(0).isEmpty() || !body.get(1).isEmpty() || !body.get(4).isEmpty();
 		
-		if(ids.isEmpty()) return productos;		
-		if(!body.get(2).isEmpty()) ids = getDetallesFilter(ids, body.get(2));
+		if(first) ids = getProductosFilter(body, true);
+		else ids = getProductosFilter(body, false);
+		if(ids.isEmpty()) return productos;	
+		ids = getDetallesFilter(ids, body.get(2));
+		
+		Set<Integer> set = new HashSet<>();
 		int min = -1, max = -1;
 		if(!body.get(3).isEmpty()) { min = Integer.parseInt(body.get(3).get(0)); max = Integer.parseInt(body.get(3).get(1));}
 		
@@ -132,8 +136,14 @@ public class ProductoServiceImp implements ProductoService {
 			DetalleProducto dp = dpDAO.findById(i).orElse(null);
 			if(min != -1) {
 				if(dp.getTalla().getNumero() >= min && dp.getTalla().getNumero() <= max)
-					productos.add(dp.getProducto());
-			}else productos.add(dp.getProducto()); 
+					if(!set.contains(dp.getProducto().getIdProducto())) {
+						productos.add(dp.getProducto());
+						set.add(dp.getProducto().getIdProducto());
+					}
+			}else if(!set.contains(dp.getProducto().getIdProducto())) {
+				productos.add(dp.getProducto());
+				set.add(dp.getProducto().getIdProducto());
+			}
 		}
 		return productos;
 	}
@@ -164,47 +174,51 @@ public class ProductoServiceImp implements ProductoService {
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
 	
-	private List<Integer> getProductosFilter(List<List<String>> ids){
-		String query = "SELECT id_producto FROM producto WHERE estado = 1 AND (";
-		boolean ant = false;
+	private List<Integer> getProductosFilter(List<List<String>> ids, boolean r){
+		String query = "SELECT id_producto FROM producto WHERE estado = 1";
+		if(r == false) return (List<Integer>) em.createNativeQuery(query).getResultList();
 		
-		List<String> aux = ids.get(0);	
+		List<String> aux = ids.get(0);
+		if(!aux.isEmpty()) query += " AND (";
 		for(int i = 0; i<aux.size(); i++) {
-			if(ant) query += " OR ";
+			if(i>0) query += " OR ";
 			query += "marca = " + aux.get(i);
-			ant = true;
+			if(i==aux.size()-1) query += ")";
 		}		
-		aux = ids.get(1);	
+		aux = ids.get(1);
+		if(!aux.isEmpty()) query += " AND (";
 		for(int i = 0; i<aux.size(); i++) {
-			if(ant) query += " OR ";
+			if(i>0) query += " OR ";
 			query += "categoria = " + aux.get(i);
-			ant = true;
+			if(i==aux.size()-1) query += ")";
 		}
 		
 		aux = ids.get(4);
-		if(aux.size() > 0) {
-			if(ids.get(0).isEmpty() && ids.get(1).isEmpty())
-				query += "precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
-			else query += ") AND (precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
-		}
+		if(!aux.isEmpty())
+			query += " AND (precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
 		
 		System.out.println(query);	
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
 	
-	private List<Integer> getDetallesFilter(List<Integer> ids, List<String> colores){
-		String query = "SELECT id_detalle FROM detalle_producto WHERE (";
+	private List<Integer> getDetallesFilter(List<Integer> ids, List<String> colores)
+	{
+		String query = "SELECT id_detalle FROM detalle_producto";
 		
+		if(!ids.isEmpty() || !colores.isEmpty()) query += " WHERE  (";		
 		for(int i = 0; i<ids.size(); i++) {
 			if(i!=0) query += " OR ";
 			query += "producto = " + ids.get(i);
-		} query += ") AND (";
+			if(i==ids.size()-1) query += ")";
+		} 
 		
+		if(!colores.isEmpty() && !ids.isEmpty()) query += "AND (";		
 		for(int i = 0; i<colores.size(); i++) {
 			if(i!=0) query += " OR ";
 			query += "color = '" + colores.get(i) + "'";
-		}query += ") GROUP BY producto";
-		
+			if(i==colores.size()-1) query += ")";
+		}
+		query += " ORDER BY id_detalle";		
 		System.out.println(query);	
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
