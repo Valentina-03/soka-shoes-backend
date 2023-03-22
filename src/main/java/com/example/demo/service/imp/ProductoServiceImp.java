@@ -107,7 +107,7 @@ public class ProductoServiceImp implements ProductoService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public int obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
+	public long obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
 	{
 		Integer d = dpDAO.getProductsByAll(id, color, talla);
 		DetalleProducto detalle = dpDAO.findById(d).orElse(null);
@@ -132,7 +132,7 @@ public class ProductoServiceImp implements ProductoService {
 		int min = -1, max = -1;
 		if(!body.get(3).isEmpty()) { min = Integer.parseInt(body.get(3).get(0)); max = Integer.parseInt(body.get(3).get(1));}
 		
-		for(int i : ids) {
+		for(Integer i : ids) {
 			DetalleProducto dp = dpDAO.findById(i).orElse(null);
 			if(min != -1) {
 				if(dp.getTalla().getNumero() >= min && dp.getTalla().getNumero() <= max)
@@ -197,7 +197,6 @@ public class ProductoServiceImp implements ProductoService {
 		if(!aux.isEmpty())
 			query += " AND (precio >= " + aux.get(0) + " AND precio <= " + aux.get(1) + ")";
 		
-		System.out.println(query);	
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
 	
@@ -219,7 +218,6 @@ public class ProductoServiceImp implements ProductoService {
 			if(i==colores.size()-1) query += ")";
 		}
 		query += " ORDER BY id_detalle";		
-		System.out.println(query);	
 		return (List<Integer>) em.createNativeQuery(query).getResultList();
 	}
 }

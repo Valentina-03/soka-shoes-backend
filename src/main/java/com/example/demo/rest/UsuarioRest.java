@@ -87,12 +87,11 @@ public class UsuarioRest
         return ResponseEntity.ok((List<Carrito>)service.encontrar(id).get().getCarritoCollection());
     }
 
-    @GetMapping(path = "/{username}/username")
-    public ResponseEntity<?> usuarioPorUsername(@PathVariable String username)
+    @GetMapping(path = "/{email}/email")
+    public ResponseEntity<?> usuarioPorEmail(@PathVariable String email)
     {
-        Usuario u = service.getByNombreUsuario(username).orElse(null);
-        if(u==null)
-            return new ResponseEntity<>("Usuario no encontrado",HttpStatus.NOT_FOUND);
+        Usuario u = service.getByEmail(email).orElse(null);
+        if(u == null) return new ResponseEntity<>("Usuario no encontrado",HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(u);
     }

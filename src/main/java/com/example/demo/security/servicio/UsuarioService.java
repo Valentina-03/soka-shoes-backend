@@ -16,24 +16,24 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public Optional<Usuario> getByNombreUsuario(String nombreUsuario){
+    /*public Optional<Usuario> getByNombreUsuario(String nombreUsuario){
         return usuarioRepository.findByUsername(nombreUsuario);
-    }
-
-    public boolean existsByNombreUsuario(String nombreUsuario){
-
-        return usuarioRepository.existsByUsername(nombreUsuario);
-    }
-
-    public boolean existsByEmail(String email){
-        return usuarioRepository.existsByEmail(email);
+    }*/
+    
+    public Optional<Usuario> getByEmail(String nombreUsuario){
+        return usuarioRepository.findByEmail(nombreUsuario);
     }
 
     
-     @Transactional(readOnly = true)
-    public boolean getExisteEmail(String email) {
+    public boolean existsByNombreUsuario(String nombreUsuario){
+        return usuarioRepository.existsByUsername(nombreUsuario);
+    }
+    
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email){
         return usuarioRepository.existsByEmail(email);
     }
+    
 
     @Transactional(readOnly = true)
     public boolean existsByUsername(String email){
@@ -50,7 +50,6 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         return usuario;
     }
-
 
     @Transactional
     public void eliminar(int id) {
