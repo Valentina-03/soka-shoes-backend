@@ -3,6 +3,7 @@ package com.example.demo.security.model;
 import com.example.demo.model.Carrito;
 import com.example.demo.model.Compra;
 import com.example.demo.model.Direccion;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Collection;
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class Usuario
     private Collection<Compra> compraCollection;
     
     @OneToMany(mappedBy = "usuario", orphanRemoval = true)
+    @JsonIgnore
     private Collection<Carrito> carritoCollection;
     
     @ManyToMany(fetch = FetchType.EAGER)

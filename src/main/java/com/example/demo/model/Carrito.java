@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import com.example.demo.security.model.Usuario;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -41,7 +40,7 @@ public class Carrito implements Serializable
     
     @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
     @ManyToOne
-    @JsonIgnore
+    
     private Usuario usuario;
 
     public Carrito() {}
