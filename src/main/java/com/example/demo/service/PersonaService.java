@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface PersonaService {
         
     public void guardar(Persona persona);
-    public void eliminar(int id);
-    public Optional<Persona> encontrar(int id);
+    public void eliminar(String id);
+    public Optional<Persona> encontrar(String id);
     public List<Persona> listar();
 }

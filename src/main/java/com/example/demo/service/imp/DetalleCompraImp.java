@@ -57,7 +57,7 @@ public class DetalleCompraImp implements DetalleCompraService{
 		for(Carrito i: carrito) 
 		{
 			DetalleProducto aux = i.getDetalleProducto();
-			if(pser.obtenerDetalle(aux.getProducto().getIdProducto(), aux.getColor().getIdColor(), aux.getTalla().getIdTalla(), i.getCantidad()) <= 0) return null;
+			if(pser.obtenerDetalle(aux.getProducto().getIdProducto(), aux.getColor().getIdColor(), aux.getTalla().getIdTalla(), i.getCantidad()) == null) return null;
 			
 			DetalleCompra d = new DetalleCompra();
 			d.setDetalleProducto(aux);

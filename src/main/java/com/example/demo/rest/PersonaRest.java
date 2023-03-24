@@ -25,7 +25,7 @@ public class PersonaRest
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> encontrar(@PathVariable Integer id) 
+    public ResponseEntity<?> encontrar(@PathVariable String id) 
     {
         Persona p = service.encontrar(id).orElse(null);
         if (p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
@@ -43,7 +43,7 @@ public class PersonaRest
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<?> editar(@RequestBody @Valid Persona actual, BindingResult br, @PathVariable Integer id) 
+    public ResponseEntity<?> editar(@RequestBody @Valid Persona actual, BindingResult br, @PathVariable String id) 
     {
         if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
         Persona nuevo = service.encontrar(id).orElse(null);        
@@ -54,7 +54,7 @@ public class PersonaRest
     } 
     
     @DeleteMapping(path = "/{id}")    
-    public ResponseEntity<?> eliminar(@PathVariable Integer id) 
+    public ResponseEntity<?> eliminar(@PathVariable String id) 
     {
         Persona p = service.encontrar(id).orElse(null);
         if (p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);

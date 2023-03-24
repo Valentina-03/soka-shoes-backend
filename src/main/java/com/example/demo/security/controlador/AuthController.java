@@ -5,7 +5,6 @@ import com.example.demo.security.dto.NuevoUsuario;
 import com.example.demo.security.jwt.JwtProvider;
 import com.example.demo.security.model.Rol;
 import com.example.demo.security.model.Rol.RolNombre;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +30,6 @@ import com.example.demo.security.servicio.UsuarioService;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins= "*")
-@Slf4j
 public class AuthController {
 
     @Autowired
@@ -79,7 +77,6 @@ public class AuthController {
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getEmail(), loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
-        log.info("si lo genera" + jwt);
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);

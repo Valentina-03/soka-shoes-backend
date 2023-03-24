@@ -45,14 +45,16 @@ public class CarritoRest
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody @Valid Carrito c, BindingResult br) 
     {
-        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
-        Usuario u = user_service.encontrar(c.getUsuario().getIdUsuario()).orElse(null);
+    	//System.out.println(c);
+    	if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
+        service.guardar(c);
+        /*Usuario u = user_service.encontrar(c.getUsuario().getIdUsuario()).orElse(null);
         if(u== null) return new ResponseEntity<>("Usuario no existente", HttpStatus.NOT_FOUND);
         
-        service.guardar(c);
+        
         Collection<Carrito> uc = u.getCarritoCollection(); uc.add(c);        
         u.setCarritoCollection(uc);
-        user_service.guardar(u);        
+        user_service.guardar(u); */       
         return ResponseEntity.ok(c);
     }
     

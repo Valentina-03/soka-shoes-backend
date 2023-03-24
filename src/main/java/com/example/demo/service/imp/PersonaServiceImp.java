@@ -24,7 +24,7 @@ public class PersonaServiceImp implements PersonaService {
 
     @Override
     @Transactional(readOnly = true )
-    public Optional<Persona> encontrar(int id) {
+    public Optional<Persona> encontrar(String id) {
         return pDAO.findById(id);
     }
 
@@ -35,7 +35,7 @@ public class PersonaServiceImp implements PersonaService {
     }
 
     @Override
-    public void eliminar(int id) {
+    public void eliminar(String id) {
         pDAO.deleteById(id);
     }
     

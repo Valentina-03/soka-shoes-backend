@@ -35,7 +35,7 @@ public class Persona implements Serializable
     
     @Id
     @Column(name = "id_persona")
-    private Integer idPersona;
+    private String idPersona;
     
     @JoinColumn(name = "tipo_id", referencedColumnName = "id_tipo")
     @ManyToOne
@@ -67,15 +67,15 @@ public class Persona implements Serializable
     public Persona() {
     }
 
-    public Persona(Integer idPersona) {
+    public Persona(String idPersona) {
         this.idPersona = idPersona;
     }
 
-    public Integer getIdPersona() {
+    public String getIdPersona() {
         return idPersona;
     }
 
-    public void setIdPersona(Integer idPersona) {
+    public void setIdPersona(String idPersona) {
         this.idPersona = idPersona;
     }
 

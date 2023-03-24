@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.DetalleProducto;
 import com.example.demo.model.Producto;
 import com.example.demo.model.ProductoDeatllesDto;
 
@@ -16,5 +17,5 @@ public interface ProductoService {
 	public List<ProductoDeatllesDto> obtenerDetalles(Integer id);
 	public List<Producto> filtrar(Integer marca, Integer categoria, String color, Integer talla, Double precio_min, Double precio_max);
 	public List<Producto> filtrar(List<List<String>> ids);
-	public long obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad);
+	public DetalleProducto obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad);
 }

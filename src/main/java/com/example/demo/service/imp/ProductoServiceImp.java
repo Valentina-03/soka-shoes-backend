@@ -107,13 +107,11 @@ public class ProductoServiceImp implements ProductoService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public long obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
+	public DetalleProducto obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
 	{
 		Integer d = dpDAO.getProductsByAll(id, color, talla);
 		DetalleProducto detalle = dpDAO.findById(d).orElse(null);
-		if(detalle == null) return -1;
-		if(detalle.getCantidad() < cantidad) return 0;
-		return detalle.getIdDetalle();
+		return detalle;
 	}
 
 	@Override
