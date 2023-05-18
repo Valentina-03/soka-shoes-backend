@@ -73,10 +73,10 @@ public class DetalleProductoImp implements DetalleProductoService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<DetalleProducto> listarProductosPorTodo(Integer p, String c, Integer t) {
-		List<DetalleProducto> productos = new ArrayList<DetalleProducto>();
-		Integer ids = dpDAO.getProductsByAll(p, c, t);
-		productos.add(dpDAO.findById(ids).orElse(null));
-		return productos;
+	public DetalleProducto listarProductosPorTodo(Integer p, String c, Integer t) {
+		Integer id = dpDAO.getProductoByAll(p, c, t);
+		System.out.println(id);
+		if(id == null) return null;
+		return dpDAO.findById(id).orElse(null);
 	}    
 }

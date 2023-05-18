@@ -4,7 +4,7 @@ import com.example.demo.dao.DetalleProductoDAO;
 import com.example.demo.dao.ProductoDAO;
 import com.example.demo.model.DetalleProducto;
 import com.example.demo.model.Producto;
-import com.example.demo.model.ProductoDeatllesDto;
+import com.example.demo.model.ProductoDeatallesDto;
 import com.example.demo.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,35 +81,35 @@ public class ProductoServiceImp implements ProductoService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<ProductoDeatllesDto> obtenerDetalles(Integer id) 
+	public List<ProductoDeatallesDto> obtenerDetalles(Integer id) 
 	{
-		List<ProductoDeatllesDto> detalles = new ArrayList<>();
+		List<ProductoDeatallesDto> detallesdto = new ArrayList<>();
 		Producto p = pDAO.findById(id).orElse(null);
-		List<DetalleProducto> d = (List<DetalleProducto>) p.getDetalleProductoCollection();
+		List<DetalleProducto> detalles = (List<DetalleProducto>) p.getDetalleProductoCollection();
 		
-		for(DetalleProducto i: d){
-			if(i.getCantidad() < 0) continue;			
-			ProductoDeatllesDto aux = new ProductoDeatllesDto();
-			aux.setIdDetalle(i.getIdDetalle());
+		for(DetalleProducto i: detalles){
+			if(i.getCantidad() < 0) continue;		
+			ProductoDeatallesDto aux = new ProductoDeatallesDto();
+			aux.setIdProducto(p.getIdProducto());
 			aux.setColor(i.getColor());
-			int it = detalles.indexOf(aux);
 			
+			int it = detallesdto.indexOf(aux);
 			if(it == -1) {
 				aux.setUrl(i.getImg());
-				aux.addTalla(i.getTalla());
-				detalles.add(aux);
+				aux.addTalla(i.getTalla(), i.getCantidad());
+				detallesdto.add(aux);
 			}else
-				detalles.get(it).addTalla(i.getTalla());
+				detallesdto.get(it).addTalla(i.getTalla(), i.getCantidad());
 		}
 		
-		return detalles;
+		return detallesdto;
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
 	public DetalleProducto obtenerDetalle(Integer id, String color, Integer talla, Integer cantidad) 
 	{
-		Integer d = dpDAO.getProductsByAll(id, color, talla);
+		Integer d = dpDAO.getProductoByAll(id, color, talla);
 		DetalleProducto detalle = dpDAO.findById(d).orElse(null);
 		return detalle;
 	}

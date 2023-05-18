@@ -85,67 +85,47 @@ public class Producto implements Serializable
     
     public Producto() {}
 
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    public Producto(Integer idProducto) {
-        this.idProducto = idProducto;
-    }
-
     public Integer getIdProducto() {
-        return idProducto;
-    }
+		return idProducto;
+	}
 
-    public double getPrecio() {
-        return precio;
-    }
+	public void setIdProducto(Integer idProducto) {
+		this.idProducto = idProducto;
+	}
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
+	public Marca getMarca() {
+		return marca;
+	}
 
-    public void setIdProducto(Integer idProducto) {
-        this.idProducto = idProducto;
-    }
-    
-    public Categoria getCategoria() {
-        return categoria;
-    }
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-    
-    public Collection<DetalleProducto> getDetalleProductoCollection() {
-        return detalleProductoCollection;
-    }
+	public Categoria getCategoria() {
+		return categoria;
+	}
 
-    public void setDetalleProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
-        this.detalleProductoCollection = detalleProductoCollection;
-    }
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
 
-    public int getCantidad() {
-        return cantidad;
-    }
+	public Collection<DetalleProducto> getDetalleProductoCollection() {
+		return detalleProductoCollection;
+	}
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
+	public void setDetalleProductoCollection(Collection<DetalleProducto> detalleProductoCollection) {
+		this.detalleProductoCollection = detalleProductoCollection;
+	}
 
-    public Marca getMarca() {
-        return marca;
-    }
+	public Double getPrecio() {
+		return precio;
+	}
 
-    public void setMarca(Marca marca) {
-        this.marca = marca;
-    }
+	public Integer getCantidad() {
+		return cantidad;
+	}
 
-    @Override
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (idProducto != null ? idProducto.hashCode() : 0);

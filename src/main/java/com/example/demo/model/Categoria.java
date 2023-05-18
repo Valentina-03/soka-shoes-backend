@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +40,7 @@ public class Categoria implements Serializable
     @Column(name = "descripcion")
     private String descripcion;
     
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoria")
     @JsonIgnore
     private Collection<Producto> productoCollection;
 

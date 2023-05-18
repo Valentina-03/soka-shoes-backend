@@ -1,17 +1,18 @@
 package com.example.demo.rest;
 
+import com.example.demo.model.DetalleProducto;
 import com.example.demo.model.Producto;
+import com.example.demo.model.ProductoDeatallesDto;
+import com.example.demo.model.ProductoDetallesRequest;
+import com.example.demo.model.Talla;
+import com.example.demo.service.DetalleProductoService;
 import com.example.demo.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class ProductoRest
     @Autowired
     private ProductoService service;
     
+    @Autowired
+    private DetalleProductoService detalle_service;
+    
     
     @GetMapping("/{id}/disponible/{color}/{talla}/{cantidad}")
     public ResponseEntity<?> getDetalle(@PathVariable Integer id, @PathVariable String color, @PathVariable Integer talla, @PathVariable Integer cantidad)
@@ -31,27 +35,13 @@ public class ProductoRest
     }
     
     @PostMapping("/filtrar")
-    public ResponseEntity<?> getProductosByFiltro(@RequestBody List<List<String>> ids)
-    {
-    	List<List<String>> l = new ArrayList<List<String>>();
-    	l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>()); l.add(new ArrayList<>());
-    	l.get(0).add("1");
-    	l.get(1).add("1");
-    	l.get(2).add("FFFFFF"); l.get(2).add("FF0000");
-    	l.get(3).add("34"); l.get(3).add("35");
-    	l.get(4).add("0"); l.get(4).add("200000");
-    	
+    public ResponseEntity<?> getProductosByFiltro(@RequestBody List<List<String>> ids){
     	return ResponseEntity.ok(service.filtrar(ids));
     }
     
     @GetMapping("/{id}/detalles")
     public ResponseEntity<?> getDetalles(@PathVariable Integer id){
     	return ResponseEntity.ok(service.obtenerDetalles(id));
-    }
-    
-    @GetMapping("/{marca}/{categoria}/{color}/{talla}/{precio_min}/{precio_max}")
-    public ResponseEntity<?> getProductosFiltro(@PathVariable Integer marca, @PathVariable Integer categoria, @PathVariable String color, @PathVariable Integer talla, @PathVariable Double precio_min, @PathVariable Double precio_max){
-    	return ResponseEntity.ok(service.filtrar(marca, categoria, color, talla, precio_min, precio_max));
     }
     
     @GetMapping
@@ -64,10 +54,9 @@ public class ProductoRest
     {
         List<Producto> productos = service.listar();
         long cantidad = 0;
-        for (int i = 0; i < productos.size(); i++) {
+        for (int i = 0; i < productos.size(); i++)
         	if(productos.get(i).getEstado())
         		cantidad += productos.get(i).getCantidad();
-        }
         return ResponseEntity.ok(cantidad);
     }
 
@@ -77,8 +66,7 @@ public class ProductoRest
         Producto p = service.encontrar(id).orElse(null);
         if(p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
-        p.setEstado(false);
-        service.guardar(p);
+        p.setEstado(false); service.guardar(p);
         return ResponseEntity.ok(p);
     }
     
@@ -87,9 +75,7 @@ public class ProductoRest
     {
         Producto p = service.encontrar(id).orElse(null);
         if(p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        
-        p.setEstado(true);
-        service.guardar(p);
+        p.setEstado(true); service.guardar(p);
         return ResponseEntity.ok(p);
     }
 
@@ -98,25 +84,66 @@ public class ProductoRest
     	return ResponseEntity.ok(service.listar());
     }
 
-    @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody @Valid Producto nuevo, BindingResult br){
-        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
-        
-        service.guardar(nuevo);
-        return ResponseEntity.ok(nuevo);
+    @PostMapping()
+    public ResponseEntity<?> guardar(@RequestBody ProductoDetallesRequest request) {
+    	Producto producto = request.getProducto(); producto.setEstado(true);
+    	service.guardar(producto);
+    	List<ProductoDeatallesDto> detalles = request.getDetalles();
+    	int cnt = 0;
+    	
+    	for(ProductoDeatallesDto i: detalles) {
+    		for(Pair<Talla, Integer> t: i.getTallas()) {
+    			DetalleProducto d = detalle_service.listarProductosPorTodo(producto.getIdProducto(), i.getColor().getIdColor(), t.getFirst().getIdTalla());
+    			if(detalle_service.listarProductosPorTodo(producto.getIdProducto(), i.getColor().getIdColor(), t.getFirst().getIdTalla()) == null) {
+    				d = new DetalleProducto();
+    				
+    				d.setColor(i.getColor());
+    				d.setTalla(t.getFirst());
+    				d.setCantidad(i.getCantidad());
+    				d.setImg(i.getUrl());
+    				d.setProducto(producto);   				
+    			}else 
+    				d.setCantidad(i.getCantidad());
+    			
+    			detalle_service.guardar(d);
+    			cnt+=i.getCantidad();
+    		}
+    	}
+    	producto.setCantidad(cnt);
+    	service.guardar(producto);
+        return ResponseEntity.ok(producto);
     }
-
-    @PutMapping
-    public ResponseEntity<?> editar(@RequestBody @Valid Producto p, BindingResult br)
+    
+    @PutMapping()
+    public ResponseEntity<?> editar(@RequestBody ProductoDetallesRequest request) 
     {
-        if (br.hasErrors()) return new ResponseEntity<List<ObjectError>>(br.getAllErrors(), HttpStatus.BAD_REQUEST);
-        
-        Producto producto = service.encontrar(p.getIdProducto()).orElse(null);
+    	Producto producto = service.encontrar(request.getProducto().getIdProducto()).orElse(null);
         if(producto == null) return new ResponseEntity<>("Producto no existe",HttpStatus.NOT_FOUND);
+        producto.setCategoria(request.getProducto().getCategoria()); producto.setMarca(request.getProducto().getMarca());
+        producto.setDescripcion(request.getProducto().getDescripcion()); producto.setNombre(request.getProducto().getNombre());
+        producto.setPrecio(request.getProducto().getPrecio()); producto.setUpdatedAt(new Date()); 
         
-        p.setUpdatedAt(new Date());
-        service.guardar(p);
-        return ResponseEntity.ok(service.encontrar(p.getIdProducto()));
+        List<ProductoDeatallesDto> detalles = request.getDetalles(); int cnt = 0;
+        
+    	for(ProductoDeatallesDto i: detalles) {
+    		for(Pair<Talla, Integer> t: i.getTallas()) {
+    			DetalleProducto d = detalle_service.listarProductosPorTodo(i.getIdProducto(), i.getColor().getIdColor(), t.getFirst().getIdTalla());
+    			if(d == null) {
+    				d = new DetalleProducto();    				
+    				d.setColor(i.getColor());
+    				d.setTalla(t.getFirst());
+    				d.setCantidad(t.getSecond());
+    				d.setImg(i.getUrl());
+    				d.setProducto(producto);   				
+    			}else 
+    				d.setCantidad(t.getSecond());   
+    			detalle_service.guardar(d);
+    			cnt+=t.getSecond();
+    		}
+    	}
+    	producto.setCantidad(cnt);
+        service.guardar(producto);
+    	return ResponseEntity.ok(producto);
     }
 
     @GetMapping(path = "/{id}")
@@ -125,16 +152,6 @@ public class ProductoRest
         Producto p = service.encontrar(id).orElse(null);
         if (p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
         
-        return ResponseEntity.ok(p);
-    }
-    
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id)
-    {
-        Producto p = service.encontrar(id).orElse(null);
-        if(p == null) return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
-        
-        service.eliminar(id);
         return ResponseEntity.ok(p);
     }
 }

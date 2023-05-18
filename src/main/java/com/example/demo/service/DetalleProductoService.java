@@ -13,5 +13,5 @@ public interface DetalleProductoService
 	public List<DetalleProducto> listarProductosPorProdCol(Integer p, String c);
 	public List<DetalleProducto> listarProductosPorProdTal(Integer p, Integer t);
 	public List<DetalleProducto> listarProductosPorColTal(String c, Integer t);
-	public List<DetalleProducto> listarProductosPorTodo(Integer p, String c, Integer t);    
+	public DetalleProducto listarProductosPorTodo(Integer p, String c, Integer t);    
 }

@@ -39,8 +39,7 @@ public class Carrito implements Serializable
     private DetalleProducto detalle;
     
     @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
-    @ManyToOne
-    
+    @ManyToOne    
     private Usuario usuario;
 
     public Carrito() {}

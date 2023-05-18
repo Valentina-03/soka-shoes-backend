@@ -20,5 +20,5 @@ public interface DetalleProductoDAO extends JpaRepository<DetalleProducto, Integ
     List<Integer> getProductsByColTal(@Param("color") String c, @Param("talla") Integer t);
 	
 	@Query(value = "SELECT id_detalle FROM detalle_producto WHERE producto = :producto AND color = :color AND talla = :talla LIMIT 1", nativeQuery = true)
-	Integer getProductsByAll(@Param("producto") Integer p, @Param("color") String c, @Param("talla") Integer t);
+	Integer getProductoByAll(@Param("producto") Integer p, @Param("color") String c, @Param("talla") Integer t);
 }

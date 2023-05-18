@@ -29,12 +29,12 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
     JwtEntryPoint jwtEntryPoint;
 
     @Bean
-    public JwtTokenFilter jwtTokenFilter(){
+    JwtTokenFilter jwtTokenFilter(){
         return new JwtTokenFilter();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
