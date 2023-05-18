@@ -29,9 +29,13 @@ public class ProductoRest
     
     
     @GetMapping("/{id}/disponible/{color}/{talla}/{cantidad}")
-    public ResponseEntity<?> getDetalle(@PathVariable Integer id, @PathVariable String color, @PathVariable Integer talla, @PathVariable Integer cantidad)
+    public ResponseEntity<?> getDetalleDisponible(@PathVariable Integer id, @PathVariable String color, @PathVariable Integer talla, @PathVariable Integer cantidad)
     {
-    	return ResponseEntity.ok(service.obtenerDetalle(id, color, talla, cantidad));
+    	DetalleProducto d = detalle_service.listarProductosPorTodo(id, color, talla);
+    	if(d != null && d.getCantidad() >= cantidad)
+    		return ResponseEntity.ok(d);
+    	
+    	return ResponseEntity.ok(null);
     }
     
     @PostMapping("/filtrar")

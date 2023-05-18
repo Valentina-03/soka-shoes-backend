@@ -2,8 +2,10 @@ package com.example.demo.rest;
 
 import com.example.demo.model.Carrito;
 import com.example.demo.model.Compra;
+import com.example.demo.model.DetalleProducto;
 import com.example.demo.security.model.Usuario;
 import com.example.demo.security.servicio.UsuarioService;
+import com.example.demo.service.CarritoService;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -21,6 +23,9 @@ public class UsuarioRest
 {
     @Autowired
     private UsuarioService service;
+    
+    @Autowired
+    private CarritoService carservice;
 
     @GetMapping
     public ResponseEntity<List<Usuario>> get() {
@@ -74,9 +79,48 @@ public class UsuarioRest
     }
 
     @GetMapping(path = "/{id}/carrito")
-    public ResponseEntity<List<Carrito>> carritoDeUsuario(@PathVariable int id)
-    {
+    public ResponseEntity<List<Carrito>> carritoDeUsuario(@PathVariable int id){
         return ResponseEntity.ok((List<Carrito>)service.encontrar(id).get().getCarritoCollection());
+    }
+    
+    @PostMapping(path = "/{id}/addCarrito")
+    public ResponseEntity<?> addCarrito(@PathVariable int id, @RequestBody DetalleProducto detalle){
+    	Usuario user = service.encontrar(id).orElse(null);
+    	if(user == null) 
+    		return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+    	
+    	for(Carrito x: user.getCarritoCollection()) {
+    		if(x.getDetalleProducto().equals(detalle)) {
+    			x.setCantidad(x.getCantidad()+1);
+    			carservice.guardar(x);
+    	    	return ResponseEntity.ok(x);
+    		}
+    	}
+    	
+    	Carrito c = new Carrito();
+        c.setCantidad(1); c.setDetalleProducto(detalle); c.setUsuario(user);
+        carservice.guardar(c);    	
+        return ResponseEntity.ok(c);
+    }
+    
+    @PostMapping(path = "/{id}/editarCarritos")
+    public ResponseEntity<?> editarCarritos(@PathVariable int id, @RequestBody Carrito[] carritos){
+    	Usuario user = service.encontrar(id).orElse(null);
+    	if(user == null) 
+    		return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+    	for(Carrito c: carritos)
+    		carservice.guardar(c); 
+    	return ResponseEntity.ok(true);
+    }
+    
+    @DeleteMapping(path = "/{id}/{idcarrito}/eliminar")
+    public ResponseEntity<?> eliminarCarrito(@PathVariable int id, @PathVariable long idcarrito){
+    	Usuario user = service.encontrar(id).orElse(null);
+    	if(user == null) 
+    		return new ResponseEntity<ObjectError>(new ObjectError("id","No existe el id"), HttpStatus.NOT_FOUND);
+
+    	carservice.eliminar(idcarrito);
+    	return ResponseEntity.ok(true);
     }
 
     @GetMapping(path = "/{email}/email")
