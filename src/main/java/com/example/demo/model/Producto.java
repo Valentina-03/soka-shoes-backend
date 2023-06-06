@@ -71,6 +71,7 @@ public class Producto implements Serializable
     
     @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
     @ManyToOne
+    @JsonIgnore
     private Categoria categoria;
     
     @OneToMany(mappedBy = "producto", orphanRemoval = true)

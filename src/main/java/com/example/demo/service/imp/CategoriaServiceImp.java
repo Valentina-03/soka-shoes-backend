@@ -36,5 +36,10 @@ public class CategoriaServiceImp implements CategoriaService {
     public void eliminar(int id) {
         cDAO.deleteById(id);
     }
+
+	@Override
+	public String getImg(Integer id) {
+		return cDAO.getImg(id);
+	}
     
 }

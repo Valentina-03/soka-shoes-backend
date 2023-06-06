@@ -11,4 +11,5 @@ public interface CategoriaService {
     public void eliminar(int id);
     public Optional<Categoria> encontrar(int id);
     public List<Categoria> listar();
+    public String getImg(Integer id);
 }
