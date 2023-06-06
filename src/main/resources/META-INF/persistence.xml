@@ -2,18 +2,8 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="com.example_demo_jar_0.0.1-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>com.example.demo.model.TipoIdentificacion</class>
-    <class>com.example.demo.security.model.Usuario</class>
-    <class>com.example.demo.model.Compra</class>
-    <class>com.example.demo.model.DetalleCompra</class>
-    <class>com.example.demo.security.model.Rol</class>
-    <class>com.example.demo.model.Persona</class>
-    <class>com.example.demo.model.Categoria</class>
     <class>com.example.demo.model.Producto</class>
-    <class>com.example.demo.model.Transaccionp</class>
     <class>com.example.demo.model.Talla</class>
-    <class>com.example.demo.model.Color</class>
-    <class>com.example.demo.model.Carrito</class>
     <class>com.example.demo.model.Marca</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/nortexploradores?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
