@@ -33,12 +33,14 @@ public class CategoriaServiceImp implements CategoriaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(int id) {
         cDAO.deleteById(id);
     }
 
 	@Override
-	public String getImg(Integer id) {
+	@Transactional(readOnly = true)
+	public Object getImg(Integer id) {
 		return cDAO.getImg(id);
 	}
     

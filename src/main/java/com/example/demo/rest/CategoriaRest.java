@@ -1,7 +1,6 @@
 package com.example.demo.rest;
 
 import com.example.demo.model.Categoria;
-import com.example.demo.model.Producto;
 import com.example.demo.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public class CategoriaRest
     }
     
     @GetMapping(path = "/{id}/imagen")
-    public ResponseEntity<?> getPrimerProducto(@PathVariable Integer id){
+    public ResponseEntity<?> getImagenProducto(@PathVariable Integer id){
     	return ResponseEntity.ok(service.getImg(id));
     }
     
